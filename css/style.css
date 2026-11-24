@@ -1,0 +1,2796 @@
+/* ============================================================
+   WAHYU PRATOMO — TAHAP 1: BERANDA
+   Referensi: nama bertumpuk diagonal, tab biru, loading petir.
+   ============================================================ */
+
+:root {
+  --bg: #121110;
+  --fg: #ede6dc;
+  --fg-dim: #a8a198;
+  --fg-faint: #8a837a;
+  --blue: #8ea6ff;
+  --line: rgba(237, 230, 220, 0.14);
+  /* Satu keluarga huruf untuk seluruh halaman: sans-serif (Inter Tight).
+     --mono sengaja diturunkan ke tumpukan sans yang sama supaya tidak ada
+     campuran rupa huruf — label kecil tetap terbaca lewat tracking lebar. */
+  --sans: "Inter Tight", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --mono: var(--sans);
+  --pad: clamp(18px, 2.6vw, 32px);
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-out: cubic-bezier(0.19, 1, 0.22, 1);
+
+  /* kertas kartu proyek */
+  --paper: #f3eee4;
+  --paper-2: #e7e0d1;
+  --ink: #17150f;
+  --ink-dim: #5c564c;
+  --ink-faint: #8a8275;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* tombol mewarisi keluarga huruf halaman (elemen <button> tidak otomatis
+   mewarisi font seperti elemen lain) */
+button { font-family: inherit; }
+
+html { -webkit-text-size-adjust: 100%; }
+html.is-loading { overflow: hidden; }
+html.lb-open { overflow: hidden; }
+
+body {
+  min-height: 100svh;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--sans);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  cursor: none;
+}
+
+/* Latar satu warna: warna dasar body dipakai rata di seluruh halaman.
+   Lapisan tetap ini hanya memastikan tidak ada pita warna saat digulir. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: var(--bg);
+}
+
+@media (hover: none) { body { cursor: auto; } }
+
+a { color: inherit; text-decoration: none; }
+::selection { background: var(--blue); color: #121110; }
+
+/* supaya anchor tidak tertutup header tetap */
+section[id] { scroll-margin-top: 92px; }
+
+/* ---------- grain halus ---------- */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  pointer-events: none;
+  opacity: 0.045;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ============================================================
+   KURSOR KUSTOM
+   ============================================================ */
+.cursor {
+  position: fixed;
+  top: 0; left: 0;
+  z-index: 999;
+  pointer-events: none;
+  will-change: transform;
+}
+.cursor__ring {
+  position: absolute;
+  top: 0; left: 0;
+  width: 30px; height: 30px;
+  margin: -15px 0 0 -15px;
+  border: 1px solid rgba(237, 230, 220, 0.45);
+  border-radius: 50%;
+  transition: width 0.25s var(--ease), height 0.25s var(--ease), margin 0.25s var(--ease), background 0.25s, border-color 0.25s;
+}
+.cursor__dot {
+  position: absolute;
+  top: 0; left: 0;
+  width: 4px; height: 4px;
+  margin: -2px 0 0 -2px;
+  background: var(--blue);
+  border-radius: 50%;
+}
+body.is-hover .cursor__ring {
+  width: 52px; height: 52px;
+  margin: -26px 0 0 -26px;
+  background: rgba(142, 166, 255, 0.12);
+  border-color: rgba(142, 166, 255, 0.7);
+}
+@media (hover: none) { .cursor { display: none; } }
+
+/* ============================================================
+   LOADING
+   Empat tugas: menandakan proses masih berjalan, menutupi tata letak
+   yang belum siap, memberi waktu aset (font/gambar/CSS) masuk, dan
+   mengalihkan perhatian sebentar — karenanya animasinya dibuat pendek
+   (≈2,5 detik) supaya tidak membosankan.
+
+   Progresnya dibaca dari lima petir yang menyala bertahap 1 -> 5,
+   tanpa meter terpisah. Setelah kelimanya penuh, petir menyatu jadi
+   satu lalu MELEPAS SENGATAN LISTRIK: kilat memenuhi layar,
+   gelombang melingkar, dan percikan menjalar keluar. Beranda muncul
+   di balik kilatan itu — jadi serah-terimanya terasa seperti
+   sambaran, bukan elemen yang tiba-tiba hilang.
+   ============================================================ */
+.loader {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  pointer-events: none;
+  transition: visibility 0.5s;
+}
+.loader.is-done { visibility: hidden; }
+/* sebelum skrip berjalan: paksa tampil (halaman tetap terbaca tanpa JS) */
+html:not(.is-loading) .loader { visibility: hidden; }
+/* sebelum skrip berjalan: paksa tampil (halaman tetap terbaca tanpa JS) */
+html:not(.is-loading) .loader { visibility: hidden; }
+
+/* latar gelap: memudar saat sengatan, supaya Beranda terlihat di baliknya */
+.loader__bg {
+  position: absolute;
+  inset: 0;
+  background: var(--bg);
+  opacity: 1;
+  transition: opacity 0.65s var(--ease);
+}
+.loader.is-shock .loader__bg {
+  opacity: 0;
+  transition: opacity 0.34s var(--ease) 0.12s;
+}
+/* sisa elemen jangan ikut menghalangi Beranda setelah serah-terima */
+.loader.is-done .loader__scene { opacity: 0; }
+
+/* kilatan penuh layar: puncak sengatan listrik */
+.loader__flash {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0;
+  background:
+    radial-gradient(
+      circle at 50% 48%,
+      #fff 0%,
+      rgba(226, 234, 255, 0.92) 26%,
+      rgba(142, 166, 255, 0.42) 52%,
+      rgba(142, 166, 255, 0) 74%
+    );
+}
+.loader.is-shock .loader__flash { animation: shockFlash 0.46s ease-out forwards; }
+@keyframes shockFlash {
+  0%   { opacity: 0; }
+  10%  { opacity: 0.95; }
+  34%  { opacity: 0.55; }
+  100% { opacity: 0; }
+}
+
+.loader__scene {
+  position: relative;
+  z-index: 1;
+  width: min(620px, 88vw);
+  height: min(260px, 40vh);
+  display: grid;
+  place-items: center;
+}
+
+/* --- 5 petir (slot berjajar, muncul bergantian) --- */
+.loader__row {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(14px, 2.2vw, 26px);
+}
+.loader__slot { display: block; }
+.bolt { width: clamp(22px, 2.4vw, 30px); height: auto; overflow: visible; color: var(--fg); fill: currentColor; }
+
+.loader__bolt {
+  will-change: transform, opacity;
+  animation:
+    boltIn 0.45s var(--ease-out) backwards,
+    boltGlow 1.5s var(--ease) infinite;
+}
+/* menyala bertahap dari petir 1 sampai 5; tiap petir yang sudah muncul
+   tetap terang, jadi jumlahnya bisa dihitung sambil menunggu */
+.loader__slot:nth-child(1) .loader__bolt { animation-delay: 0ms, 520ms; }
+.loader__slot:nth-child(2) .loader__bolt { animation-delay: 160ms, 680ms; }
+.loader__slot:nth-child(3) .loader__bolt { animation-delay: 320ms, 840ms; }
+.loader__slot:nth-child(4) .loader__bolt { animation-delay: 480ms, 1000ms; }
+.loader__slot:nth-child(5) .loader__bolt { animation-delay: 640ms, 1160ms; }
+
+@keyframes boltIn {
+  0% { transform: scale(0.2) translateY(10px); opacity: 0; filter: blur(3px); }
+  60% { opacity: 1; filter: blur(0); }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+@keyframes boltGlow {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+    opacity: 0.82;
+    filter: drop-shadow(0 0 4px rgba(142, 166, 255, 0.3));
+  }
+  45% {
+    transform: translateY(-4px) scale(1.06);
+    opacity: 1;
+    filter: drop-shadow(0 0 11px rgba(142, 166, 255, 0.8));
+  }
+}
+
+/* --- hasil penyatuan: satu petir besar (tanpa monogram) --- */
+.loader__mark {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  transform: scale(0.86);
+  transform-origin: 50% 50%;
+  transition: transform 0.62s var(--ease-out), opacity 0.32s var(--ease);
+  will-change: transform, opacity;
+}
+.loader.is-converge .loader__mark {
+  opacity: 1;
+  transform: scale(1);
+}
+.loader__solo {
+  width: clamp(50px, 5.6vw, 70px);
+  height: auto;
+  color: var(--fg);
+  opacity: 0;
+  transform: scale(0.4) rotate(-8deg);
+  transition: transform 0.68s var(--ease-out), opacity 0.4s var(--ease);
+  will-change: transform, opacity;
+}
+.loader.is-converge .loader__solo {
+  opacity: 1;
+  transform: scale(1) rotate(0deg);
+}
+/* saat menunggu aset, petir tunggal terus "terisi" daya */
+.loader.is-converge:not(.is-shock) .loader__solo {
+  animation: chargePulse 1.1s var(--ease) infinite;
+}
+@keyframes chargePulse {
+  0%, 100% { filter: drop-shadow(0 0 9px rgba(142, 166, 255, 0.3)); }
+  50% { filter: drop-shadow(0 0 26px rgba(142, 166, 255, 0.95)); }
+}
+
+/* kelimanya terbang ke satu titik, menyisakan mark di tengah */
+.loader.is-converge .loader__bolt {
+  animation: none;
+  transform: translateX(calc(var(--d) * -1)) scale(0.35);
+  opacity: 0;
+  transition: transform 0.55s var(--ease), opacity 0.4s var(--ease);
+}
+
+/* --- sengatan: gelombang melingkar + percikan menjalar --- */
+.loader__flare {
+  position: absolute;
+  width: min(460px, 78vw);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(142, 166, 255, 0.32), transparent 62%);
+  opacity: 0;
+  pointer-events: none;
+}
+.loader__flare::before,
+.loader__flare::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(205, 218, 255, 0.75);
+  opacity: 0;
+}
+.loader.is-shock .loader__flare { animation: flareOut 0.9s var(--ease) forwards; }
+.loader.is-shock .loader__flare::before {
+  animation: ringOut 0.8s cubic-bezier(0.2, 0.7, 0.3, 1) forwards;
+}
+.loader.is-shock .loader__flare::after {
+  animation: ringOut 0.95s cubic-bezier(0.2, 0.7, 0.3, 1) 0.07s forwards;
+}
+@keyframes flareOut {
+  0%   { opacity: 0; transform: scale(0.4); }
+  20%  { opacity: 1; }
+  100% { opacity: 0; transform: scale(1.6); }
+}
+@keyframes ringOut {
+  0%   { opacity: 0.9; transform: scale(0.18); }
+  70%  { opacity: 0.35; }
+  100% { opacity: 0; transform: scale(1.9); }
+}
+
+/* percikan: garis listrik yang menyambar keluar dari titik sengatan */
+.loader__arcs {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+.loader__arcs i {
+  --a: 0deg;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: clamp(150px, 30vw, 440px);
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.95),
+    rgba(142, 166, 255, 0.75) 42%,
+    rgba(142, 166, 255, 0) 100%
+  );
+  transform-origin: 0 50%;
+  transform: rotate(var(--a)) scaleX(0);
+  opacity: 0;
+}
+.loader__arcs i:nth-child(1) { --a: 14deg; }
+.loader__arcs i:nth-child(2) { --a: 166deg; }
+.loader__arcs i:nth-child(3) { --a: 104deg; }
+.loader__arcs i:nth-child(4) { --a: 256deg; }
+.loader__arcs i:nth-child(5) { --a: 58deg; }
+.loader__arcs i:nth-child(6) { --a: 302deg; }
+.loader.is-shock .loader__arcs i {
+  animation: arcOut 0.5s cubic-bezier(0.15, 0.8, 0.3, 1) forwards;
+}
+@keyframes arcOut {
+  0%   { opacity: 0; transform: rotate(var(--a)) scaleX(0); }
+  18%  { opacity: 1; }
+  100% { opacity: 0; transform: rotate(var(--a)) scaleX(1.35); }
+}
+
+/* petir tunggal melepas muatan lalu lenyap */
+.loader.is-shock .loader__solo {
+  animation: boltDischarge 0.55s cubic-bezier(0.2, 0.7, 0.3, 1) forwards;
+}
+@keyframes boltDischarge {
+  0%   { transform: scale(1); opacity: 1; filter: drop-shadow(0 0 18px rgba(142, 166, 255, 0.8)); }
+  35%  { transform: scale(1.55) rotate(-4deg); opacity: 1; }
+  100% { transform: scale(2.8); opacity: 0; }
+}
+
+/* ============================================================
+   HEADER — kolom tengah sejajar dengan baris meta Beranda
+   ============================================================ */
+.head {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 20px;
+  padding: 22px var(--pad);
+  transition: background 0.4s var(--ease), backdrop-filter 0.4s var(--ease),
+    box-shadow 0.4s var(--ease), padding 0.4s var(--ease);
+}
+/* saat halaman digulir: header diberi latar gelap + blur supaya teks di
+   bawahnya tidak tembus */
+.head.is-stuck {
+  padding-top: 16px;
+  padding-bottom: 16px;
+  background: rgba(16, 17, 16, 0.9);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 1px 0 rgba(237, 230, 220, 0.1);
+}
+
+.logo {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+  font-family: var(--sans);
+  font-size: clamp(14px, 1.1vw, 18px);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  line-height: 1;
+  white-space: nowrap;
+}
+/* "Pratomo" memakai font & warna yang sama dengan "WAHYU" */
+.logo__first,
+.logo__last {
+  font-weight: 900;
+  color: var(--fg);
+}
+.logo__first { margin-right: 0.28em; }
+
+.head__nav {
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: clamp(14px, 2vw, 30px);
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.head__nav a {
+  position: relative;
+  padding: 4px 0;
+  color: var(--fg);
+  transition: color 0.3s;
+}
+.head__nav a::after {
+  content: "";
+  position: absolute;
+  left: 0; bottom: 0;
+  width: 100%; height: 1px;
+  background: var(--blue);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.35s var(--ease);
+}
+.head__nav a:hover { color: var(--blue); }
+.head__nav a:hover::after { transform: scaleX(1); }
+.head__nav a.is-active { color: var(--blue); }
+.head__nav a.is-active::after { transform: scaleX(1); }
+
+/* pemisah baris nav yang hanya aktif di layar sempit: 5 item di baris
+   pertama, ORGANIZATION + CONTACT di baris kedua (lebih seimbang
+   daripada menyisakan satu item sendirian) */
+.head__break { display: none; }
+
+/* ---------- pill button ---------- */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: var(--blue);
+  color: #121110;
+  border: 1px solid transparent;
+  border-radius: 100px;
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: 12.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 11px 22px;
+  white-space: nowrap;
+  transition: transform 0.35s var(--ease), background 0.3s, box-shadow 0.3s;
+}
+.pill:hover { transform: translateY(-2px); box-shadow: 0 10px 26px rgba(142, 166, 255, 0.22); }
+.pill--lg {
+  font-size: 12.5px;
+  padding: 17px 26px 17px 28px;
+  gap: 16px;
+}
+.pill__arrow {
+  display: grid;
+  place-items: center;
+  transition: transform 0.4s var(--ease);
+}
+.pill--lg:hover .pill__arrow { transform: translateX(4px); }
+
+/* ============================================================
+   BERANDA
+   ============================================================ */
+.home {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  padding: clamp(96px, 12vh, 140px) var(--pad) clamp(24px, 3.4vh, 42px) var(--pad);
+  overflow: hidden;
+}
+
+/* --- baris meta atas: kolom sama dengan header agar benar-benar sejajar --- */
+.home__meta {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: baseline;
+  gap: 20px;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  margin-bottom: clamp(26px, 5vh, 62px);
+  animation: fade 1s var(--ease) 0.15s backwards;
+}
+.home__meta span:nth-child(1) { justify-self: start; }
+.home__meta span:nth-child(2) { justify-self: center; }
+.home__meta span:nth-child(3) { justify-self: end; }
+
+/* --- nama besar bertumpuk --- */
+.name {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(4px, 1.2vw, 18px);
+  font-family: var(--sans);
+  font-weight: 900;
+  font-size: clamp(60px, 13.6vw, 184px);
+  line-height: 0.82;
+  letter-spacing: -0.045em;
+  text-transform: uppercase;
+}
+.name__line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.05em;
+  will-change: transform;
+}
+.name__line--first { align-self: flex-start; }
+.name__line--second { align-self: flex-end; }
+.name__inner {
+  display: inline-block;
+  white-space: nowrap;
+  will-change: transform, opacity;
+}
+
+/* masuk hanya setelah loading selesai — nama naik tepat setelah kilat petir padam */
+body.is-loaded .name__inner {
+  animation: nameReveal 1.25s var(--ease-out) 0.3s backwards;
+}
+body.is-loaded .name__line--second .name__inner { animation-delay: 0.44s; }
+
+/* masuk: terangkat dari balik garis + sedikit miring, lalu tegak */
+@keyframes nameReveal {
+  0% { transform: translate3d(0, 108%, 0) rotate(2.4deg); opacity: 0; }
+  55% { opacity: 1; }
+  100% { transform: translate3d(0, 0, 0) rotate(0deg); opacity: 1; }
+}
+
+@keyframes fade {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* --- footer beranda --- */
+.home__foot {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: end;
+  gap: clamp(16px, 3vw, 48px);
+  padding-top: clamp(28px, 5vh, 60px);
+  animation: fade 1s var(--ease) 0.55s backwards;
+}
+
+.home__intro {
+  max-width: 44ch;
+  font-size: clamp(15px, 1.05vw, 17px);
+  line-height: 1.5;
+  letter-spacing: -0.005em;
+  color: var(--fg);
+}
+
+.scroll-cue {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  transition: color 0.3s;
+}
+.scroll-cue span {
+  display: inline-block;
+  animation: bob 2.4s var(--ease) infinite;
+}
+.scroll-cue:hover { color: var(--fg); }
+@keyframes bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(4px); }
+}
+
+.home__foot .pill--lg { justify-self: end; }
+
+/* --- garis sirkuit --- */
+.circuit {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0.5;
+}
+.circuit__g { will-change: transform; }
+.circuit__g path {
+  fill: none;
+  stroke: rgba(237, 230, 220, 0.16);
+  stroke-width: 1;
+}
+.circuit__g circle {
+  fill: rgba(142, 166, 255, 0.75);
+  stroke: none;
+}
+
+/* ============================================================
+   ANIMASI MASUK ANTAR BAGIAN (.reveal)
+   dipicu IntersectionObserver saat bagian masuk viewport
+   ============================================================ */
+.reveal {
+  opacity: 0;
+  transform: translateY(26px);
+  transition:
+    opacity 0.85s var(--ease-out) var(--d, 0ms),
+    transform 0.85s var(--ease-out) var(--d, 0ms);
+}
+.reveal.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* ============================================================
+   LATAR — satu warna untuk seluruh halaman
+   Tidak ada blok warna per bagian. Semua bagian tembus pandang,
+   jadi warna dasar body (#121110) terlihat rata dari atas ke bawah.
+   ============================================================ */
+.home,
+.about,
+.kuliah,
+.project,
+.skill,
+.org,
+.contact {
+  position: relative;
+  background: transparent;
+}
+
+/* ============================================================
+   ABOUT
+   ============================================================ */
+.about {
+  position: relative;
+  padding: clamp(80px, 11vh, 130px) var(--pad) clamp(70px, 10vh, 120px) var(--pad);
+  border-top: 1px solid var(--line);
+}
+
+/* ============================================================
+   HEADER BAGIAN — tiap bagian punya bentuk sendiri
+   (garis editorial, pita, matriks, cap, status) supaya halaman tidak
+   terasa seragam dari atas ke bawah.
+   ============================================================ */
+.hd {
+  display: flex;
+  align-items: center;
+  gap: clamp(12px, 1.6vw, 20px);
+  margin-bottom: clamp(26px, 4.5vh, 48px);
+  font-family: var(--mono);
+  text-transform: uppercase;
+}
+.hd__body {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+.hd__k {
+  font-size: clamp(12px, 0.86vw, 13.5px);
+  letter-spacing: 0.2em;
+  color: var(--fg);
+}
+.hd__s {
+  font-size: clamp(11px, 0.76vw, 12.5px);
+  letter-spacing: 0.14em;
+  color: var(--fg-faint);
+}
+
+/* --- About: judul editorial, garis tipis penuh, nomor sebagai penanda --- */
+.hd--about {
+  align-items: baseline;
+  gap: clamp(12px, 1.6vw, 20px);
+  padding-bottom: 13px;
+  border-bottom: 1px solid var(--line);
+}
+.hd--about .hd__no {
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  color: var(--blue);
+  flex: none;
+  padding-top: 2px;
+  font-variant-numeric: tabular-nums;
+}
+.hd--about .hd__s {
+  margin-left: auto;
+  text-align: right;
+  letter-spacing: 0.1em;
+}
+
+/* --- Project: pita, nomor besar berwarna aksen --- */
+.hd--project {
+  align-items: flex-end;
+  gap: clamp(10px, 1.4vw, 16px);
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line);
+  position: relative;
+}
+.hd--project::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  width: clamp(60px, 8vw, 110px);
+  height: 1px;
+  background: var(--blue);
+}
+.hd--project .hd__ribbon {
+  font-family: var(--sans);
+  font-weight: 900;
+  font-size: clamp(30px, 3.4vw, 46px);
+  line-height: 0.8;
+  letter-spacing: -0.05em;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(142, 166, 255, 0.85);
+  flex: none;
+}
+.hd--project .hd__body { padding-bottom: 4px; }
+.hd--project .hd__ticks {
+  margin-left: auto;
+  display: flex;
+  align-items: flex-end;
+  gap: 5px;
+  padding-bottom: 5px;
+}
+.hd--project .hd__ticks i {
+  display: block;
+  width: 2px;
+  height: 8px;
+  background: rgba(237, 230, 220, 0.32);
+}
+.hd--project .hd__ticks i:nth-child(2) { height: 14px; background: rgba(237, 230, 220, 0.62); }
+.hd--project .hd__ticks i:nth-child(3) { height: 20px; background: rgba(237, 230, 220, 0.5); }
+.hd--project .hd__ticks i:nth-child(4) { height: 12px; background: rgba(237, 230, 220, 0.38); }
+.hd--project .hd__ticks i:nth-child(5) { height: 17px; background: rgba(237, 230, 220, 0.4); }
+
+/* --- Skill: nomor mengapung + matriks 3 × 3 --- */
+.hd--skill { align-items: center; }
+.hd--skill .hd__no {
+  font-family: var(--sans);
+  font-weight: 900;
+  font-size: clamp(26px, 2.6vw, 36px);
+  line-height: 1;
+  letter-spacing: -0.05em;
+  color: rgba(237, 230, 220, 0.34);
+  flex: none;
+}
+.hd--skill .hd__matrix {
+  margin-left: auto;
+  display: grid;
+  grid-template-columns: repeat(3, 5px);
+  grid-auto-rows: 5px;
+  gap: 3px;
+  flex: none;
+}
+.hd--skill .hd__matrix i {
+  display: block;
+  border-radius: 1px;
+  background: rgba(237, 230, 220, 0.2);
+}
+.hd--skill .hd__matrix i:nth-child(1),
+.hd--skill .hd__matrix i:nth-child(5),
+.hd--skill .hd__matrix i:nth-child(9) { background: var(--blue); }
+.hd--skill .hd__matrix i:nth-child(3) { background: rgba(237, 230, 220, 0.55); }
+.hd--skill .hd__matrix i:nth-child(7) { background: rgba(237, 230, 220, 0.72); }
+
+/* --- Organisasi: nomor dalam cincin tipis + skala tahun --- */
+.hd--org .hd__stamp {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  flex: none;
+  border-radius: 50%;
+  border: 1px solid rgba(237, 230, 220, 0.26);
+  color: var(--fg);
+  font-size: 12.5px;
+  letter-spacing: 0.06em;
+  font-variant-numeric: tabular-nums;
+}
+.hd--org .hd__scale {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex: none;
+}
+.hd--org .hd__scale i {
+  position: relative;
+  font-style: normal;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: var(--fg-faint);
+  padding: 0 10px;
+}
+.hd--org .hd__scale i::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 4px;
+  height: 4px;
+  margin-top: -2px;
+  border-radius: 50%;
+  background: rgba(237, 230, 220, 0.3);
+}
+.hd--org .hd__scale i::after {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 50%;
+  width: calc(100% - 4px);
+  height: 1px;
+  background: rgba(237, 230, 220, 0.14);
+}
+.hd--org .hd__scale i:last-child::after { display: none; }
+.hd--org .hd__scale i:first-child::before { background: var(--fg-dim); }
+
+/* --- Contact: label + nomor bagian berongga --- */
+.hd--contact {
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--line);
+  position: relative;
+}
+.hd--contact::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  width: clamp(52px, 7vw, 92px);
+  height: 1px;
+  background: var(--blue);
+}
+.hd--contact .hd__idx {
+  font-family: var(--sans);
+  font-weight: 900;
+  font-size: clamp(28px, 3vw, 42px);
+  line-height: 0.8;
+  letter-spacing: -0.05em;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(237, 230, 220, 0.45);
+  flex: none;
+}
+
+.about__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.86fr) minmax(0, 1.14fr);
+  gap: clamp(28px, 4.4vw, 78px);
+  align-items: start;
+}
+
+/* --- foto --- */
+.about__photo { margin: 0; }
+@media (min-width: 901px) {
+  /* foto mengikuti saat teks dibaca */
+  .about__photo {
+    position: sticky;
+    top: 104px;
+  }
+}
+.about__frame {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border-radius: 2px;
+  background: #1b1a18;
+  clip-path: inset(0 0 100% 0 round 2px);
+  transform: translateY(calc(var(--out, 0) * -72px)) scale(calc(1 - var(--out, 0) * 0.07));
+  opacity: calc(1 - var(--out, 0) * 0.92);
+  transition: clip-path 1.15s var(--ease-out) 0.05s;
+}
+.about.is-in .about__frame { clip-path: inset(0 0 0 0 round 2px); }
+.about__frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(18, 17, 16, 0) 55%, rgba(18, 17, 16, 0.55) 100%);
+}
+.about__frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 58% 22%;
+  transform: scale(1.16);
+  filter: saturate(0.9) contrast(1.04) blur(7px);
+  transition: transform 1.5s var(--ease-out) 0.1s, filter 1.05s var(--ease) 0.1s;
+}
+.about.is-in .about__frame img {
+  transform: scale(1);
+  filter: saturate(0.94) contrast(1.04) blur(0);
+}
+.about__frame:hover img { transform: scale(1.03); filter: saturate(1.02) contrast(1.04); }
+
+.about__tag {
+  position: absolute;
+  left: 14px;
+  bottom: 13px;
+  z-index: 1;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--fg);
+  background: rgba(18, 17, 16, 0.62);
+  border: 1px solid rgba(237, 230, 220, 0.18);
+  border-radius: 100px;
+  padding: 6px 11px;
+  backdrop-filter: blur(6px);
+}
+
+.about__cap {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 11px;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--fg-faint);
+  opacity: calc(1 - var(--out, 0) * 0.9);
+}
+/* --- teks --- */
+.about__body {
+  transform: translateY(calc(var(--out, 0) * -76px));
+  opacity: calc(1 - var(--out, 0));
+  will-change: transform, opacity;
+}
+
+.about__eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--blue);
+  margin-bottom: clamp(14px, 2vw, 22px);
+}
+.about__eyebrow::before,
+.about__eyebrow::after {
+  content: "";
+  width: 0;
+  height: 1px;
+  background: var(--blue);
+  transition: width 0.9s var(--ease-out) 0.25s;
+}
+.about__eyebrow.is-in::before,
+.about__eyebrow.is-in::after { width: 34px; }
+.about.is-in .about__eyebrow::before,
+.about.is-in .about__eyebrow::after { width: 34px; }
+
+.about__title {
+  font-family: var(--sans);
+  font-weight: 800;
+  font-size: clamp(27px, 3.5vw, 56px);
+  line-height: 1.05;
+  letter-spacing: -0.018em;
+  text-wrap: balance;
+  margin-bottom: clamp(20px, 2.6vw, 34px);
+  filter: blur(7px);
+  transition: filter 1.2s var(--ease-out) 0.15s, letter-spacing 1.2s var(--ease-out) 0.15s;
+}
+.about__title.is-in {
+  filter: blur(0);
+  letter-spacing: -0.038em;
+}
+
+.about__lead {
+  font-size: clamp(15px, 1.3vw, 19px);
+  line-height: 1.55;
+  letter-spacing: -0.012em;
+  color: var(--fg);
+  max-width: 46ch;
+  margin-bottom: clamp(14px, 1.8vw, 22px);
+}
+.about__lead em {
+  font-style: normal;
+  color: var(--blue);
+}
+
+.about__text {
+  font-size: clamp(13.5px, 1.02vw, 15.5px);
+  line-height: 1.68;
+  color: var(--fg-dim);
+  max-width: 54ch;
+  margin-bottom: clamp(13px, 1.6vw, 20px);
+}
+
+/* --- tabel data singkat --- */
+.about__facts {
+  display: grid;
+  gap: 0;
+  margin: clamp(26px, 3.4vw, 44px) 0 clamp(26px, 3.2vw, 38px);
+  border-top: 1px solid var(--line);
+}
+.about__facts > div {
+  display: grid;
+  grid-template-columns: 116px minmax(0, 1fr);
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+}
+.about__facts dt {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--fg-faint);
+  padding-top: 3px;
+}
+.about__facts dd {
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--fg);
+}
+
+.about__next {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--fg);
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(237, 230, 220, 0.28);
+  transition: color 0.3s, border-color 0.3s, gap 0.3s var(--ease);
+}
+.about__next:hover {
+  color: var(--blue);
+  border-color: var(--blue);
+  gap: 15px;
+}
+.about__next span:last-child {
+  display: inline-block;
+  animation: bob 2.4s var(--ease) infinite;
+}
+
+/* ============================================================
+   MATA KULIAH — jalur ular tangga (satu garis menyambung)
+   Label besar bergantian kiri/kanan mengikuti garis yang digambar
+   ulang oleh JS sesuai posisi tiap baris.
+   ============================================================ */
+.kuliah {
+  position: relative;
+  padding: clamp(80px, 11vh, 130px) var(--pad) clamp(60px, 9vh, 110px) var(--pad);
+  border-top: 1px solid var(--line);
+  overflow-x: hidden; /* potong busur garis ular-tangga yang keluar ke kiri/kanan */
+}
+
+/* --- header: nomor + jejak gelombang kecil di kanan --- */
+.hd--kuliah {
+  align-items: baseline;
+  padding-bottom: 13px;
+  border-bottom: 1px solid var(--line);
+}
+.hd--kuliah .hd__no {
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  color: var(--blue);
+  flex: none;
+  padding-top: 2px;
+  font-variant-numeric: tabular-nums;
+}
+.hd--kuliah .hd__trace {
+  width: clamp(64px, 8vw, 110px);
+  height: 16px;
+  margin-left: auto;
+  flex: none;
+  align-self: center;
+  color: var(--blue);
+  opacity: 0.9;
+}
+
+.roadmap__intro {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.85fr);
+  gap: clamp(16px, 4vw, 64px);
+  align-items: end;
+  margin-bottom: clamp(30px, 5vh, 56px);
+}
+.kuliah__title {
+  font-family: var(--sans);
+  font-weight: 800;
+  font-size: clamp(27px, 3.4vw, 54px);
+  line-height: 1.04;
+  letter-spacing: -0.038em;
+  text-wrap: balance;
+}
+.kuliah__lede {
+  font-size: clamp(13.5px, 1.02vw, 15.5px);
+  line-height: 1.66;
+  color: var(--fg-dim);
+  max-width: 48ch;
+}
+
+/* --- roadmap: panggung, garis, kepala garis --- */
+.roadmap {
+  /* Semua ukuran & warna roadmap diatur dari sini */
+  --roadmap-color: var(--blue);
+  --roadmap-color-soft: rgba(142, 166, 255, 0.17);
+  --roadmap-stroke: clamp(10px, 1vw, 16px); /* tebal garis (12–18px) */
+  --roadmap-rope: 1; /* lebar zig-zag: 1 = selebar panggung */
+  --roadmap-node: 54px; /* diameter lingkaran penanda */
+  --roadmap-row-h: 40vh; /* tinggi satu baris zig-zag (cukup untuk belokan U) */
+  --roadmap-font-title: clamp(18px, 1.55vw, 26px);
+  position: relative;
+}
+
+/* Tinggi panggung = jumlah BARIS zig-zag × tinggi per baris.
+   --roadmap-n diisi JS dari jumlah baris (bukan jumlah mata kuliah). */
+.roadmap__stage {
+  position: relative;
+  height: calc(var(--roadmap-n, 4) * var(--roadmap-row-h));
+  /* jarak dari judul/lede supaya label baris pertama (yang duduk di ATAS
+     garis) tidak menimpa teks pembuka */
+  margin-top: clamp(48px, 7vh, 96px);
+}
+
+.roadmap__svg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.roadmap__path {
+  fill: none;
+  /* tebal garis diset JS sesuai skala viewBox (0..100) → tetap ±12–16px */
+  stroke-width: 0.1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+/* path bayangan: panduan jalur, selalu terlihat penuh */
+.roadmap__path--soft {
+  stroke: var(--roadmap-color-soft);
+}
+/* path utama: digambar bertahap mengikuti gulir */
+.roadmap__path--main {
+  stroke: var(--roadmap-color);
+  /* tebal garis diset JS sesuai skala viewBox (0..100) → tetap ±12–16px */
+  stroke-width: 0.1;
+  filter: drop-shadow(0 0 12px rgba(142, 166, 255, 0.3));
+}
+
+/* kepala garis: ujung bercahaya yang menempel di ujung garis dan ikut
+   berputar mengikuti arah garis */
+.roadmap__head {
+  opacity: 0;
+  transition: opacity 0.3s linear;
+}
+.roadmap__head-glow { fill: rgba(142, 166, 255, 0.13); }
+.roadmap__head-core {
+  fill: var(--roadmap-color);
+  stroke: var(--bg);
+  stroke-width: 2;
+}
+
+/* --- daftar langkah --- */
+.roadmap__list {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* lapisan penanda langkah: di atas garis, di bawah judul/kartu */
+.roadmap__z {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Tiap mata kuliah: titik nol = titik di garis; labelnya diletakkan
+   di ATAS garis (baris ke kanan) atau DI BAWAH garis (baris ke kiri). */
+.ritem {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+
+/* lingkaran bernomor (atau ikon) di atas garis */
+.ritem__icon {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 2;
+  width: var(--roadmap-node);
+  height: var(--roadmap-node);
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 1.5px solid rgba(237, 230, 220, 0.22);
+  /* cincin warna latar: garis tampak lewat di belakang penanda */
+  box-shadow: 0 0 0 7px var(--bg);
+  color: var(--fg-faint);
+  font-family: var(--mono);
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  font-variant-numeric: tabular-nums;
+  /* belum tercapai: benar-benar tak terlihat, termasuk cincinnya */
+  opacity: 0;
+  visibility: hidden;
+  transform: translate(-50%, -50%) scale(0.55);
+  transition: transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1),
+    opacity 0.3s var(--ease), border-color 0.4s var(--ease),
+    color 0.4s var(--ease), box-shadow 0.5s var(--ease),
+    visibility 0s linear 0.3s;
+}
+.ritem__icon svg { width: 24px; height: 24px; }
+.ritem__icon .ritem__num { font-style: normal; }
+
+/* label mata kuliah: judul + semester, tanpa kartu penjelasan.
+   Lebarnya dibatasi per kolom (diisi JS) supaya tiga label dalam satu baris
+   tidak saling bertabrakan. */
+.ritem__body {
+  position: absolute;
+  left: 0;
+  width: var(--label-w, 220px);
+  /* Teks tidak boleh terpotong sama sekali: kotak label tidak memotong isi,
+     dan kata yang kebetulan lebih lebar dari kolom dipatahkan (hyphens)
+     supaya tidak meluber keluar label. */
+  overflow: visible;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  align-items: center;
+  text-align: center;
+  /* label selalu tepat di tengah titiknya */
+  transform: translate(-50%, -50%);
+}
+
+.ritem__title,
+.ritem__meta {
+  /* kata panjang tidak boleh meluber keluar label. `break-word` hanya
+     mematahkan kalau benar-benar tidak muat (lebih rapi daripada pemenggalan
+     otomatis `hyphens`, yang bisa menghasilkan "Elektromeka-nik"). */
+  max-width: 100%;
+  overflow-wrap: break-word;
+  hyphens: manual;
+}
+/* baris ke kanan: label di ATAS garis (di sisi luar belokan) */
+.ritem--above .ritem__body {
+  bottom: calc(var(--roadmap-node) / 2 + 12px);
+  top: auto;
+  transform: translateX(-50%);
+}
+/* baris ke kiri: label di BAWAH garis */
+.ritem--below .ritem__body {
+  top: calc(var(--roadmap-node) / 2 + 12px);
+  bottom: auto;
+  transform: translateX(-50%);
+}
+
+.ritem__title {
+  font-family: var(--sans);
+  font-weight: 800;
+  font-size: var(--roadmap-font-title);
+  line-height: 1.06;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+  color: var(--fg);
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.5s var(--ease), transform 0.6s var(--ease-out);
+}
+/* semester: kecil, redup, di bawah judul */
+.ritem__meta {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--fg-faint);
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.45s var(--ease), transform 0.5s var(--ease-out);
+}
+
+/* langkah yang belum tercapai: benar-benar tak terlihat (posisinya tetap,
+   jadi tidak ada label menggantung menunggu garis datang) */
+.ritem.is-ahead { visibility: hidden; }
+
+/* urutan animasi: ikon pop, nomor, judul, lalu kartu.
+   Ikon tinggal di lapisan `.roadmap__z` (bukan di dalam `.ritem`), jadi
+   keadaannya ditandai langsung dengan kelas `.is-in` pada ikonnya. */
+.ritem__icon.is-in {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, -50%) scale(1);
+  border-color: var(--roadmap-color);
+  color: var(--fg);
+  box-shadow: 0 0 0 7px var(--bg), 0 0 24px rgba(142, 166, 255, 0.35);
+  transition-delay: 0s;
+}
+.ritem.is-in .ritem__title { opacity: 1; transform: none; transition-delay: 0.12s; }
+.ritem.is-in .ritem__meta { opacity: 1; transform: none; transition-delay: 0.24s; }
+
+.kuliah__next { margin-top: clamp(40px, 8vh, 90px); }
+
+/* ============================================================
+   PROJECT — kartu bertumpuk (stacked deck)
+   Setiap kartu sticky dengan offset bertingkat; kartu berikutnya
+   naik menutupi kartu sebelumnya, menyisakan tab berwarnanya.
+   ============================================================ */
+.project {
+  position: relative;
+  padding: clamp(80px, 11vh, 130px) var(--pad) clamp(60px, 9vh, 110px) var(--pad);
+  border-top: 1px solid var(--line);
+}
+
+.project__intro {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.85fr);
+  gap: clamp(16px, 4vw, 64px);
+  align-items: end;
+  margin-bottom: clamp(30px, 5vh, 56px);
+}
+.project__title {
+  font-family: var(--sans);
+  font-weight: 800;
+  font-size: clamp(27px, 3.4vw, 54px);
+  line-height: 1.04;
+  letter-spacing: -0.038em;
+  text-wrap: balance;
+}
+.project__lede {
+  font-size: clamp(13.5px, 1.02vw, 15.5px);
+  line-height: 1.66;
+  color: var(--fg-dim);
+  max-width: 48ch;
+}
+
+/* --- tumpukan --- */
+.pstack {
+  position: relative;
+}
+
+.pcard {
+  --accent: var(--blue);
+  --stick: 92px;
+  --tabh: 30px;
+  position: sticky;
+  top: calc(var(--stick) + var(--i, 0) * var(--tabh));
+  width: calc(100% - clamp(0px, 6.6vw, 128px));
+  max-width: 1640px;
+  margin-inline: auto;
+  margin-bottom: clamp(18px, 2.6vh, 30px);
+  padding-top: var(--tabh);
+}
+.pcard:last-child { margin-bottom: 0; }
+
+/* tab berwarna, menonjol di atas kartu */
+.pcard__tab {
+  position: absolute;
+  top: 0;
+  /* tab ikut bergeser sejauh tepi kiri jendela yang mengecil,
+     supaya tetap menempel di kartunya */
+  left: calc((1 - var(--shrink, 1)) * 50%);
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: var(--tabh);
+  padding: 0 15px 0 10px;
+  background: var(--accent);
+  color: #16140f;
+  border-radius: 8px 8px 0 0;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.pcard__num { opacity: 0.62; }
+
+/* kartu kertas */
+.pcard__win {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: auto;
+  background: var(--paper);
+  color: var(--ink);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 26px 60px rgba(0, 0, 0, 0.45);
+  /* kartu yang sudah terlewati mengecil dari tepi atas, sedangkan tab
+     berwarnanya tetap di tempat supaya strip tab tetap rapi */
+  transform-origin: top center;
+  transform: scale(var(--shrink, 1));
+  will-change: transform;
+}
+
+/* baris alamat proyek di tepi atas kartu */
+.pcard__bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: none;
+  padding: 15px clamp(22px, 2.6vw, 40px) 0;
+  border-bottom: 0;
+  background: none;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  transition: opacity 0.4s var(--ease);
+}
+/* kartu yang tertutup hanya menyisakan tepi kertas + tab-nya */
+.pcard.is-covered .pcard__bar { opacity: 0; }
+.pcard__path {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.pcard__year { margin-left: auto; color: var(--ink-dim); flex: none; }
+
+.pcard__body {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 0.94fr) minmax(0, 1.06fr);
+  align-items: center;
+  gap: clamp(24px, 3.4vw, 60px);
+  padding: clamp(22px, 2.2vw, 34px) clamp(22px, 2.6vw, 40px) clamp(26px, 2.6vw, 40px);
+}
+
+/* --- panel teks --- */
+.pcard__info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.pcard__cat {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
+.pcard__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
+  flex: none;
+}
+.pcard__title {
+  margin: clamp(8px, 1vw, 14px) 0 0;
+  font-family: var(--sans);
+  font-weight: 900;
+  font-size: clamp(36px, 4vw, 72px);
+  line-height: 0.92;
+  letter-spacing: -0.048em;
+  text-transform: uppercase;
+}
+.pcard__sub {
+  margin-top: 8px;
+  font-size: clamp(15px, 1.06vw, 17.5px);
+  line-height: 1.4;
+  color: var(--ink-dim);
+  letter-spacing: -0.01em;
+}
+.pcard__desc {
+  margin-top: clamp(10px, 1.2vw, 16px);
+  font-size: clamp(15.5px, 1.02vw, 17px);
+  line-height: 1.6;
+  color: var(--ink-dim);
+  max-width: 48ch;
+}
+.pcard__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  list-style: none;
+  margin-top: clamp(12px, 1.4vw, 18px);
+}
+.pcard__tags li {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  border: 1px solid rgba(23, 21, 15, 0.18);
+  border-radius: 100px;
+  padding: 6px 11px;
+}
+.pcard__foot {
+  margin-top: clamp(18px, 2vw, 26px);
+  padding-top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.pcard__role {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.pcard__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #16140f;
+  background: var(--accent);
+  border: 0;
+  border-radius: 100px;
+  padding: 11px 17px;
+  cursor: pointer;
+  transition: transform 0.3s var(--ease), box-shadow 0.3s;
+}
+.pcard__btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); }
+.pcard__btn span { transition: transform 0.3s var(--ease); }
+.pcard__btn:hover span { transform: translate(2px, -2px); }
+
+/* --- panel gambar --- */
+.pcard__media { min-width: 0; align-self: center; }
+.pcard__frame {
+  position: relative;
+  height: clamp(300px, 24vw, 430px);
+  border: 2px solid var(--accent);
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--paper-2);
+}
+.pcard__slides { position: absolute; inset: 0; }
+.pcard__shot {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transform: scale(1.045);
+  transition:
+    opacity 0.65s var(--ease),
+    transform 1.1s var(--ease-out);
+}
+.pcard__shot.is-active { opacity: 1; transform: none; }
+.pcard__frame:hover .pcard__shot.is-active { transform: scale(1.02); }
+
+.pcard__ctrl {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px;
+  border-radius: 100px;
+  background: rgba(18, 17, 16, 0.74);
+  backdrop-filter: blur(8px);
+  color: var(--fg);
+}
+.pcard__arrow {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+  font-family: var(--sans);
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.25s, color 0.25s;
+}
+.pcard__arrow:hover { background: var(--accent); color: #16140f; }
+.pcard__count {
+  padding: 0 6px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: rgba(237, 230, 220, 0.62);
+  font-variant-numeric: tabular-nums;
+}
+.pcard__count b { color: var(--fg); font-weight: 500; }
+
+.pcard__pips {
+  position: absolute;
+  left: 12px;
+  bottom: 16px;
+  z-index: 2;
+  display: flex;
+  gap: 5px;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.55));
+}
+.pcard__pip {
+  width: 14px;
+  height: 2px;
+  padding: 0;
+  border: 0;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.42);
+  cursor: pointer;
+  transition: width 0.35s var(--ease), background 0.35s;
+}
+.pcard__pip.is-on { width: 24px; background: #fff; }
+
+/* --- animasi isi kartu saat kartu "mendarat" --- */
+.pcard__info > * {
+  transition:
+    opacity 0.55s var(--ease-out) var(--dl, 0ms),
+    transform 0.65s var(--ease-out) var(--dl, 0ms);
+}
+.pcard:not(.is-live) .pcard__info > * {
+  opacity: 0;
+  transform: translateY(16px);
+}
+.pcard__info > *:nth-child(1) { --dl: 40ms; }
+.pcard__info > *:nth-child(2) { --dl: 90ms; }
+.pcard__info > *:nth-child(3) { --dl: 140ms; }
+.pcard__info > *:nth-child(4) { --dl: 190ms; }
+.pcard__info > *:nth-child(5) { --dl: 240ms; }
+.pcard__info > *:nth-child(6) { --dl: 290ms; }
+
+.pcard__frame { transition: transform 0.9s var(--ease-out); }
+.pcard:not(.is-live) .pcard__frame { transform: scale(0.975); }
+
+/* ============================================================
+   LIGHTBOX GALERI
+   ============================================================ */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 400;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: clamp(14px, 2.4vw, 30px);
+  background: rgba(10, 9, 8, 0.95);
+  backdrop-filter: blur(12px);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.35s var(--ease), visibility 0.35s;
+}
+.lightbox[hidden] { display: none; }
+.lightbox.is-open { opacity: 1; visibility: visible; }
+
+.lightbox__stage {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(6px, 1.4vw, 18px);
+}
+.lightbox__img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 6px;
+  background: #0d0c0b;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+}
+.lightbox__nav {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: clamp(36px, 4vw, 48px);
+  height: clamp(36px, 4vw, 48px);
+  border: 1px solid rgba(237, 230, 220, 0.24);
+  border-radius: 50%;
+  background: rgba(237, 230, 220, 0.04);
+  color: var(--fg);
+  font-family: var(--sans);
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.25s, border-color 0.25s, color 0.25s;
+}
+.lightbox__nav:hover {
+  background: var(--blue);
+  border-color: var(--blue);
+  color: #121110;
+}
+.lightbox__close {
+  position: absolute;
+  top: clamp(12px, 2vw, 24px);
+  right: clamp(12px, 2vw, 24px);
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border: 1px solid rgba(237, 230, 220, 0.24);
+  border-radius: 50%;
+  background: rgba(18, 17, 16, 0.6);
+  color: var(--fg);
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.25s, color 0.25s, transform 0.25s;
+}
+.lightbox__close:hover { background: var(--fg); color: #121110; transform: rotate(90deg); }
+.lightbox__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 0 clamp(2px, 1vw, 10px);
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+}
+.lightbox__label { color: var(--fg); }
+.lightbox__count b { color: var(--blue); font-weight: 500; }
+
+/* ============================================================
+   SKILL — daftar keahlian + dek kartu
+   Alur animasi (mirip video referensi):
+   1) kartu berputar sebagai lingkaran 3D (orbit) selama digulir,
+   2) lalu satu per satu "lepas" dari orbit dan mendarat ke grid 3 × 3.
+   Sorot kartu/daftar untuk saling menandai.
+   ============================================================ */
+.skill {
+  position: relative;
+  padding: clamp(80px, 11vh, 130px) var(--pad)
+    max(clamp(80px, 12vh, 140px), var(--pin-pad, 0px)) var(--pad);
+  border-top: 1px solid var(--line);
+}
+
+/* --- pembuka Skill: pernyataan di tengah, mengikuti dek yang juga di tengah --- */
+.skill__intro {
+  display: grid;
+  justify-items: center;
+  text-align: center;
+  gap: clamp(14px, 2.2vh, 22px);
+  width: 100%;
+  max-width: 980px;
+  margin: 0 auto clamp(30px, 5vh, 52px);
+}
+.skill__title {
+  font-family: var(--sans);
+  font-weight: 800;
+  font-size: clamp(28px, 4.1vw, 66px);
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+  max-width: 21ch;
+}
+.skill__lede {
+  position: relative;
+  padding-top: clamp(14px, 2vh, 20px);
+  font-size: clamp(13.5px, 1.02vw, 15.5px);
+  line-height: 1.7;
+  color: var(--fg-dim);
+  max-width: 60ch;
+}
+.skill__lede::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 48px;
+  height: 1px;
+  margin-left: -24px;
+  background: rgba(237, 230, 220, 0.24);
+}
+
+/* panggung kartu: satu kolom, dek di tengah layar seperti video referensi */
+.skill__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+  gap: 0;
+  align-items: start;
+}
+
+/* Di layar lebar, panggung "dipin" di tengah selama kartu berputar lalu
+   menyebar, jadi seluruh animasi terlihat di satu layar. */
+@media (min-width: 901px) {
+  .skill__grid {
+    /* ruang gulir lebih panjang: satu putaran penuh jadi lebih pelan
+       dan setiap fase punya waktu untuk terlihat */
+    min-height: calc(100svh + 620px);
+  }
+  .deckbox {
+    position: sticky;
+    top: var(--pin-top, 120px);
+    align-self: start;
+  }
+}
+
+/* --- legenda keterampilan (3 × 3, di bawah dek) --- */
+.skill__legend {
+  margin-top: clamp(16px, 3vh, 34px);
+}
+.legend__head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fg-faint);
+  margin-bottom: 14px;
+}
+.legend__k { color: var(--fg-dim); }
+.legend__rule {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    rgba(237, 230, 220, 0.24),
+    rgba(237, 230, 220, 0.04)
+  );
+}
+.legend__s { color: var(--blue); }
+
+/* --- daftar --- */
+/* --- legenda (grid 3 × 3) --- */
+.slist {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  overflow: hidden;
+  list-style: none;
+}
+.slist__item {
+  display: grid;
+  grid-template-columns: 8px auto minmax(0, 1fr);
+  grid-template-areas:
+    "dot idx name"
+    "dot desc desc";
+  align-content: start;
+  gap: 4px 9px;
+  padding: clamp(13px, 1.5vw, 19px) clamp(12px, 1.3vw, 18px);
+  background: rgba(18, 17, 16, 0.66);
+  opacity: 0;
+  transform: translateY(12px);
+  cursor: pointer;
+  transition:
+    opacity 0.6s var(--ease-out) calc(var(--i, 0) * 45ms + 60ms),
+    transform 0.65s var(--ease-out) calc(var(--i, 0) * 45ms + 60ms),
+    background 0.35s var(--ease);
+}
+.skill.is-in .slist__item { opacity: 1; transform: none; }
+.slist__item.is-focus,
+.slist__item:hover {
+  background: color-mix(in srgb, var(--accent, var(--blue)) 12%, rgba(18, 17, 16, 0.8));
+}
+
+/* titik warna aksen tiap keterampilan */
+.slist__dot {
+  grid-area: dot;
+  width: 6px;
+  height: 6px;
+  margin-top: 7px;
+  border-radius: 50%;
+  background: var(--accent, var(--blue));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent, var(--blue)) 20%, transparent);
+  transition: transform 0.35s var(--ease);
+}
+.slist__item.is-focus .slist__dot,
+.slist__item:hover .slist__dot { transform: scale(1.5); }
+
+.slist__idx {
+  grid-area: idx;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--fg-faint);
+  transition: color 0.3s;
+}
+.slist__item.is-focus .slist__idx,
+.slist__item:hover .slist__idx { color: var(--accent, var(--blue)); }
+.slist__name {
+  grid-area: name;
+  font-size: clamp(12.5px, 1.02vw, 15.5px);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.022em;
+  color: var(--fg);
+  transition: color 0.3s;
+}
+.slist__item.is-focus .slist__name,
+.slist__item:hover .slist__name { color: #fff; }
+.slist__desc {
+  grid-area: desc;
+  font-size: clamp(12px, 0.86vw, 13.5px);
+  line-height: 1.5;
+  color: var(--fg-faint);
+  letter-spacing: 0.01em;
+  transition: color 0.3s;
+}
+.slist__item.is-focus .slist__desc,
+.slist__item:hover .slist__desc { color: var(--fg-dim); }
+
+/* --- panggung dek --- */
+.deckbox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  width: 100%;
+  /* ruang bernapas supaya kartu di tepi orbit tidak terpotong */
+  padding: clamp(6px, 1.4vw, 18px) 0;
+  perspective: 1200px;
+  perspective-origin: 50% 48%;
+}
+
+.deck {
+  /* lebar dibatasi juga oleh tinggi layar supaya seluruh 3 × 3
+     tetap muat saat dipin (mis. jendela lebar tapi pendek) */
+  width: min(100%, 500px, calc((100svh - 210px) * 0.75));
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(10px, 1.3vw, 16px);
+  transform-style: preserve-3d;
+}
+
+.scard {
+  position: relative;
+  z-index: calc(20 - var(--i, 0));
+  display: block;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  /* semua posisi/rotasi dihitung di JS:
+     --tx/--ty/--tz = geser dari tempat duduknya di grid
+     --ax/--ay     = kemiringan 3D saat masih di orbit
+     --rot         = putaran bidang
+     --sc          = skala (kecil di orbit, 1 di grid)
+     --veil        = 0..1, lapisan gelap untuk kartu di belakang orbit
+                     (bukan transparansi, supaya tidak saling "menembus")
+     --lift        = kartu yang sedang dibagikan terangkat dari tumpukan */
+  transform:
+    translate3d(var(--tx, 0px), var(--ty, 0px), var(--tz, 0px))
+    translateY(var(--lift, 0px))
+    rotateX(var(--ax, 0deg))
+    rotateY(var(--ay, 0deg))
+    rotate(var(--rot, 0deg))
+    scale(var(--sc, 1));
+  transform-origin: 50% 50%;
+  will-change: transform;
+}
+.scard:hover,
+.scard:focus-visible,
+.scard.is-focus { z-index: 40; }
+
+/* lapisan gelap: kartu yang berada di belakang orbit tampak tertutup
+   bayangan, jadi tepinya tetap terlihat padat dan tidak saling menembus */
+.scard__face::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: #14120e;
+  opacity: calc(var(--veil, 0) * 0.72);
+  pointer-events: none;
+  transition: opacity 0.12s linear;
+}
+
+.scard__face {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  aspect-ratio: 3 / 4;
+  padding: clamp(8px, 0.85vw, 12px);
+  border-radius: 10px;
+  overflow: hidden;
+  background:
+    radial-gradient(120% 80% at 22% 0%, rgba(255, 255, 255, 0.32), transparent 62%),
+    linear-gradient(158deg, var(--accent), color-mix(in srgb, var(--accent) 70%, #17150f));
+  color: #16140f;
+  box-shadow:
+    0 14px 28px rgba(0, 0, 0, 0.3),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.22);
+  transform-style: preserve-3d;
+  transition: transform 0.5s var(--ease-out), box-shadow 0.5s var(--ease);
+}
+.scard:hover .scard__face,
+.scard:focus-visible .scard__face,
+.scard.is-focus .scard__face {
+  transform: translateY(-9px) rotateX(var(--hrx, 0deg)) rotateY(var(--hry, 0deg)) scale(1.035);
+  box-shadow:
+    0 26px 50px rgba(0, 0, 0, 0.42),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.4);
+}
+
+.scard__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--mono);
+  font-size: clamp(9.5px, 0.8vw, 11px);
+  letter-spacing: 0.08em;
+  opacity: 0.78;
+}
+.scard__suit { font-size: 1.1em; opacity: 0.72; }
+
+.scard__crest {
+  flex: 1;
+  display: grid;
+  place-items: center;
+  margin: clamp(5px, 0.7vw, 9px) 0;
+  border-radius: 100px 100px 8px 8px;
+  background: rgba(255, 255, 255, 0.3);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.28);
+}
+.scard__crest svg {
+  width: 46%;
+  max-width: 44px;
+  height: auto;
+  fill: none;
+  stroke: #16140f;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.82;
+}
+
+.scard__foot {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: none;
+  /* kaki kartu selalu di dasar; kesejajaran nama antar kartu dijamin oleh
+     tinggi minimum catatan di bawah (dua baris), bukan oleh tinggi kaki
+     kartu — supaya di kartu pendek isinya tidak meluber */
+  min-height: 0;
+  justify-content: flex-end;
+}
+.scard__name {
+  font-weight: 800;
+  /* ukuran mengikuti lebar kartu (--cw ditulis JS) supaya nama panjang
+     seperti TROUBLESHOOT tidak terpotong saat dek mengecil di jendela
+     pendek */
+  font-size: clamp(7.5px, calc(var(--cw, 140px) * 0.092), 12.5px);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.scard__note {
+  font-family: var(--mono);
+  font-size: clamp(9px, 0.66vw, 10px);
+  line-height: 1.3;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0.7;
+  /* dua baris selalu disediakan agar tinggi kaki kartu seragam */
+  min-height: 2.6em;
+}
+
+/* ============================================================
+   ORGANISASI
+   ============================================================ */
+.org {
+  position: relative;
+  padding: clamp(80px, 11vh, 130px) var(--pad) clamp(70px, 9vh, 110px) var(--pad);
+  border-top: 1px solid var(--line);
+}
+
+/* --- pembuka Organisasi: cermin — teks pendukung di kiri bergaris tegak,
+   judul rata kanan. Sengaja dibalik dari pembuka Project. --- */
+.org__intro {
+  display: grid;
+  grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr);
+  gap: clamp(24px, 5vw, 88px);
+  align-items: start;
+  margin-bottom: clamp(34px, 6vh, 64px);
+}
+.org__title {
+  grid-column: 2;
+  grid-row: 1;
+  font-family: var(--sans);
+  font-weight: 800;
+  font-size: clamp(28px, 4vw, 62px);
+  line-height: 1.02;
+  letter-spacing: -0.042em;
+  text-align: right;
+  text-wrap: balance;
+}
+.org__lede {
+  grid-column: 1;
+  grid-row: 1;
+  margin-top: clamp(2px, 0.5vw, 8px);
+  padding-left: clamp(14px, 1.6vw, 22px);
+  border-left: 1px solid rgba(237, 230, 220, 0.28);
+  font-size: clamp(13.5px, 1.02vw, 15.5px);
+  line-height: 1.7;
+  color: var(--fg-dim);
+  max-width: 40ch;
+}
+
+.org__list {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(18px, 2.4vw, 34px);
+}
+/* animasi keluar mengikuti pola About: <li> memakai .reveal untuk masuk,
+   kartu di dalamnya yang bergeser/memudar saat bagian ditinggalkan */
+.ocard {
+  --accent: var(--blue);
+  display: grid;
+  grid-template-rows: 1fr auto;
+  height: 100%;
+  background: var(--paper);
+  color: var(--ink);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 20px 46px rgba(0, 0, 0, 0.38);
+  transform: translateY(calc(var(--out, 0) * -64px)) scale(calc(1 - var(--out, 0) * 0.03));
+  opacity: calc(1 - var(--out, 0));
+  will-change: transform, opacity;
+}
+
+.ocard__info {
+  display: flex;
+  flex-direction: column;
+  padding: clamp(18px, 2.2vw, 30px);
+}
+.ocard__cat {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
+.ocard__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
+  flex: none;
+}
+.ocard__name {
+  margin: clamp(8px, 1vw, 14px) 0 0;
+  font-family: var(--sans);
+  font-weight: 900;
+  font-size: clamp(22px, 2.3vw, 34px);
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+}
+.ocard__role {
+  margin-top: 7px;
+  font-size: clamp(12px, 0.95vw, 14px);
+  color: var(--ink-dim);
+  letter-spacing: -0.01em;
+}
+.ocard__period {
+  margin-top: 10px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.ocard__desc {
+  margin-top: clamp(10px, 1.2vw, 16px);
+  font-size: clamp(13px, 0.9vw, 15px);
+  line-height: 1.62;
+  color: var(--ink-dim);
+}
+.ocard__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  list-style: none;
+  margin-top: clamp(10px, 1.3vw, 16px);
+}
+.ocard__tags li {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  border: 1px solid rgba(23, 21, 15, 0.18);
+  border-radius: 100px;
+  padding: 5px 9px;
+}
+.ocard__foot {
+  margin-top: auto;
+  padding-top: clamp(14px, 1.8vw, 22px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.ocard__org {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+/* --- panel foto (memakai ulang gaya galeri proyek) --- */
+.ocard__media { min-width: 0; }
+.ocard__media .pcard__frame {
+  height: clamp(190px, 26vw, 300px);
+  border-width: 0;
+  border-top: 2px solid var(--accent);
+  border-radius: 0;
+  background: #1b1a18;
+}
+
+/* ============================================================
+   CONTACT
+   ============================================================ */
+.contact {
+  position: relative;
+  padding: clamp(80px, 11vh, 130px) var(--pad) clamp(26px, 4vh, 46px) var(--pad);
+  border-top: 1px solid var(--line);
+}
+
+/* --- pembuka Contact: judul selebar halaman, keterangan jadi strip bawah --- */
+.contact__intro {
+  display: grid;
+  gap: clamp(16px, 2.6vh, 26px);
+  margin-bottom: clamp(28px, 5vh, 50px);
+}
+.contact__title {
+  font-family: var(--sans);
+  font-weight: 800;
+  font-size: clamp(32px, 5.4vw, 92px);
+  line-height: 0.98;
+  letter-spacing: -0.045em;
+  text-wrap: balance;
+  max-width: 24ch;
+}
+.contact__col {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: clamp(16px, 3vw, 48px);
+  flex-wrap: wrap;
+  padding-top: clamp(14px, 2vh, 20px);
+  border-top: 1px solid rgba(237, 230, 220, 0.16);
+}
+.contact__lede {
+  font-size: clamp(13.5px, 1.02vw, 15.5px);
+  line-height: 1.66;
+  color: var(--fg-dim);
+  max-width: 54ch;
+}
+.contact__status {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-faint);
+}
+.contact__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #7fd7a8;
+  box-shadow: 0 0 0 0 rgba(127, 215, 168, 0.55);
+  animation: dotPulse 2.4s var(--ease) infinite;
+}
+@keyframes dotPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(127, 215, 168, 0.5); }
+  55% { box-shadow: 0 0 0 7px rgba(127, 215, 168, 0); }
+}
+
+/* --- daftar kanal kontak --- */
+.clinks {
+  list-style: none;
+  border-top: 1px solid var(--line);
+}
+.clink { border-bottom: 1px solid var(--line); }
+.clink__a {
+  position: relative;
+  display: grid;
+  grid-template-columns: 44px minmax(0, 0.42fr) minmax(0, 1fr) 34px;
+  align-items: center;
+  gap: clamp(10px, 2vw, 28px);
+  padding: clamp(20px, 3.4vh, 34px) 10px;
+  transition: padding 0.4s var(--ease), background 0.4s var(--ease);
+}
+.clink__a::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 2px;
+  background: var(--blue);
+  transform: scaleY(0);
+  transform-origin: 50% 0;
+  transition: transform 0.45s var(--ease-out);
+}
+.clink__a:hover,
+.clink__a:focus-visible {
+  padding-left: 22px;
+  background: linear-gradient(90deg, rgba(142, 166, 255, 0.09), rgba(142, 166, 255, 0));
+  outline: none;
+}
+.clink__a:hover::before,
+.clink__a:focus-visible::before { transform: scaleY(1); }
+
+.clink__idx {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: 0.12em;
+  color: var(--fg-faint);
+  transition: color 0.3s;
+}
+.clink__k {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  transition: color 0.3s;
+}
+.clink__v {
+  font-size: clamp(17px, 2.3vw, 34px);
+  font-weight: 600;
+  letter-spacing: -0.032em;
+  color: var(--fg);
+  overflow-wrap: anywhere;
+  transition: color 0.3s, transform 0.45s var(--ease);
+}
+.clink__arrow {
+  justify-self: end;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  font-size: clamp(15px, 1.5vw, 22px);
+  color: var(--fg-faint);
+  transition: transform 0.45s var(--ease), color 0.3s;
+}
+.clink__arrow svg { width: 1em; height: 1em; display: block; }
+/* kanal spesial (unduh CV): ditandai beda supaya langsung terlihat */
+.clink--cv .clink__a {
+  padding-left: 22px;
+  background: linear-gradient(90deg, rgba(142, 166, 255, 0.11), rgba(142, 166, 255, 0));
+}
+.clink--cv .clink__a::before { width: 2px; transform: scaleY(1); }
+.clink--cv .clink__k,
+.clink--cv .clink__idx,
+.clink--cv .clink__arrow { color: var(--blue); }
+.clink--cv .clink__a:hover,
+.clink--cv .clink__a:focus-visible { padding-left: 30px; }
+.clink__a:hover .clink__idx,
+.clink__a:focus-visible .clink__idx { color: var(--blue); }
+.clink__a:hover .clink__v,
+.clink__a:focus-visible .clink__v { color: #fff; }
+.clink__a:hover .clink__arrow,
+.clink__a:focus-visible .clink__arrow { transform: translate(3px, -3px); color: var(--blue); }
+
+.contact__foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: clamp(26px, 4vh, 44px);
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-faint);
+}
+.contact__top { display: inline-flex; align-items: center; gap: 8px; color: var(--fg-dim); }
+.contact__top span { transition: transform 0.4s var(--ease); }
+.contact__top:hover { color: var(--fg); }
+.contact__top:hover span { transform: translateY(-3px); }
+
+/* ============================================================
+   RESPONSIF
+   ============================================================ */
+@media (max-width: 1080px) {
+  .head { gap: 12px; }
+}
+
+@media (max-width: 900px) {
+  .head {
+    grid-template-columns: auto 1fr;
+    grid-auto-rows: auto;
+    row-gap: 12px;
+    padding: 16px var(--pad) 12px;
+  }
+  .head__nav {
+    grid-column: 1 / -1;
+    justify-self: start;
+    gap: 18px;
+    font-size: 11.5px;
+    max-width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .head__nav::-webkit-scrollbar { display: none; }
+
+  .home {
+    padding-top: 108px;
+    padding-right: var(--pad);
+    padding-bottom: 98px;
+  }
+  .home__meta {
+    grid-template-columns: 1fr auto;
+    gap: 6px 16px;
+    margin-right: 0;
+  }
+  .home__meta span:nth-child(2) { display: none; }
+
+  .name {
+    font-size: clamp(52px, 16.4vw, 130px);
+    gap: 2px;
+    line-height: 0.9;
+  }
+  .name__line--second { align-self: flex-start; margin-right: 0; }
+
+  /* about di tablet */
+  .about {
+    padding-top: 84px;
+    padding-right: var(--pad);
+    padding-bottom: 90px;
+  }
+  .about__grid {
+    grid-template-columns: 1fr;
+    gap: clamp(26px, 5vw, 40px);
+  }
+  .about__frame { aspect-ratio: 4 / 5; }
+  .about__photo { width: 100%; max-width: 480px; }
+
+  .home__foot {
+    grid-template-columns: 1fr;
+    gap: 22px;
+    align-items: start;
+  }
+  .home__foot .pill--lg { justify-self: start; }
+  .scroll-cue { order: 2; }
+
+  /* mata kuliah di tablet: satu kolom, label menempel kiri garis */
+  .kuliah {
+    padding-top: 84px;
+    padding-right: var(--pad);
+    padding-bottom: 70px;
+  }
+  .roadmap__intro {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    align-items: start;
+    margin-bottom: 30px;
+  }
+  /* roadmap di tablet/ponsel: zig-zag lebih sempit, judul lebih kecil */
+  .roadmap {
+    --roadmap-rope: 1;
+    --roadmap-row-h: 44vh;
+    --roadmap-node: 46px;
+    --roadmap-font-title: clamp(17px, 2.2vw, 24px);
+  }
+
+  /* project di tablet: kartu lebih tinggi, panel teks di atas gambar */
+  .project {
+    padding-top: 84px;
+    padding-right: var(--pad);
+    padding-bottom: 70px;
+  }
+  .project__intro {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    align-items: start;
+    margin-bottom: 30px;
+  }
+  .pcard {
+    --stick: 92px;
+    --tabh: 26px;
+    width: 100%;
+    max-width: none;
+  }
+  .pstack { padding-bottom: clamp(0px, 6svh, 64px); }
+  .pcard__win { height: auto; }
+  .pcard__body {
+    grid-template-columns: 1fr;
+    gap: clamp(14px, 2.6vw, 22px);
+  }
+  .pcard__info { min-height: 0; }
+  .pcard__media { order: -1; }
+  .pcard__frame { height: clamp(190px, 34vh, 300px); }
+  .pcard__desc { max-width: none; }
+  .pcard__foot { margin-top: clamp(14px, 2.4vw, 22px); }
+
+  /* skill di tablet: daftar di atas, dek 3 × 3 di bawah */
+  .skill {
+    padding-top: 84px;
+    padding-right: var(--pad);
+    padding-bottom: 86px;
+  }
+  .skill__intro {
+    gap: 12px;
+    margin-bottom: 30px;
+  }
+  .skill__grid {
+    min-height: 0;
+    padding-bottom: 0;
+  }
+  .deckbox {
+    position: static;
+  }
+  .deck { width: min(100%, 420px, calc((100svh - 240px) * 0.78)); }
+
+  /* contact di tablet */
+  .contact__intro {
+    gap: 16px;
+    margin-bottom: 34px;
+  }
+  .clink__a {
+    grid-template-columns: 34px minmax(0, 0.5fr) minmax(0, 1fr) 26px;
+    gap: 14px;
+  }
+
+  /* organisasi di tablet: satu kolom */
+  .org {
+    padding-top: 84px;
+    padding-right: var(--pad);
+    padding-bottom: 78px;
+  }
+  .org__intro {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    align-items: start;
+    margin-bottom: 30px;
+  }
+  /* kembali ke urutan alami: judul dulu, lalu teks pendukung */
+  .org__title {
+    grid-column: 1;
+    grid-row: 1;
+    text-align: left;
+  }
+  .org__lede {
+    grid-column: 1;
+    grid-row: 2;
+    margin-top: 0;
+    max-width: 54ch;
+  }
+  .org__list { grid-template-columns: 1fr; }
+  .ocard__media .pcard__frame { height: clamp(200px, 40vw, 320px); }
+
+  /* loading di layar kecil */
+  .loader__row { gap: 12px; }
+}
+
+@media (max-width: 560px) {
+  /* font dinaikkan, jadi jarak nav dirapatkan supaya enam item tetap
+     muat satu baris tanpa terpotong di layar sempit */
+  .head__nav { font-size: 10px; gap: 9px; }
+  /* tujuh label tidak lagi muat satu baris di layar sempit (logo kini
+     kapital + petir sehingga lebih lebar); dibungkus dua baris agar
+     tidak terpotong */
+  @media (max-width: 470px) {
+    .head__nav { flex-wrap: wrap; row-gap: 7px; gap: 7px 10px; }
+    .head__break { display: block; flex-basis: 100%; height: 0; }
+    /* header dua baris nav lebih tinggi, jadi anchor diberi jarak lebih */
+    section[id] { scroll-margin-top: 118px; }
+  }
+  /* label status turun ke baris sendiri supaya tidak berdesakan */
+  .hd--contact { flex-wrap: wrap; row-gap: 8px; }
+  /* teks meta bagian dirapatkan tracking-nya agar tetap muat satu baris
+     di samping nomor & ornamen kanan (tidak terpotong, header tetap ringkas) */
+  .hd__s { letter-spacing: 0.07em; }
+  /* About: tanggal pindah ke baris bawah, sejajar dengan judulnya,
+     jadi judul tetap satu baris dan tidak berdesakan */
+  .hd--about {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: baseline;
+    column-gap: 14px;
+    row-gap: 3px;
+  }
+  .hd--about .hd__s {
+    grid-column: 2;
+    margin-left: 0;
+    text-align: left;
+    letter-spacing: 0.06em;
+  }
+  /* Organisasi: skala tahun turun ke baris bawah supaya judul tidak pecah */
+  .hd--org {
+    flex-wrap: wrap;
+    row-gap: 4px;
+  }
+  .hd--org .hd__scale {
+    margin-left: 54px;
+    padding-top: 2px;
+  }
+  .hd--org .hd__scale i { padding: 0 8px; }
+
+  /* pembuka bagian di ponsel */
+  .skill__title { font-size: clamp(27px, 7.6vw, 36px); max-width: 19ch; }
+  .skill__lede { max-width: 42ch; }
+  .org__title { font-size: clamp(28px, 7.8vw, 38px); }
+  .org__lede { max-width: none; }
+  .contact__title { font-size: clamp(32px, 9vw, 44px); max-width: none; }
+  .contact__col { gap: 14px; }
+  .home__intro { max-width: none; }
+  .loader__scene { height: 200px; }
+  .loader__solo { width: clamp(44px, 12vw, 58px); }
+
+  .about__facts > div {
+    grid-template-columns: 1fr;
+    gap: 4px;
+    padding: 11px 0;
+  }
+  .about__facts dt { padding-top: 0; }
+  .about__frame { max-width: none; }
+  .about__cap { font-size: 11px; letter-spacing: 0.12em; max-width: none; }
+  .about { padding-bottom: 74px; }
+
+  /* mata kuliah (roadmap) di ponsel */
+  .kuliah { padding-top: 74px; padding-bottom: 56px; }
+  .kuliah__title { font-size: clamp(26px, 7.4vw, 36px); }
+  .roadmap {
+    --roadmap-rope: 1;
+    --roadmap-row-h: 46vh;
+    --roadmap-stroke: 9px;
+    --roadmap-node: 40px;
+    --roadmap-font-title: clamp(15px, 4.1vw, 20px);
+  }
+  /* di ponsel label boleh lebih lebar karena tidak ada kartu di samping */
+  .ritem__body { max-width: min(74vw, 330px); }
+
+  /* project di ponsel */
+  .project { padding-bottom: 56px; }
+  .pcard {
+    --stick: 92px;
+    --tabh: 22px;
+    margin-bottom: 16px;
+  }
+  .pstack { padding-bottom: 0; }
+  .pcard__tab { font-size: 11.5px; padding: 0 12px 0 8px; gap: 6px; }
+  .pcard__bar { padding: 13px 14px 0; font-size: 11.5px; gap: 8px; }
+  .pcard__path { max-width: 52%; }
+  .pcard__body { padding: 16px 14px; gap: 12px; }
+  .pcard__cat { font-size: 11.5px; }
+  .pcard__title { font-size: clamp(28px, 8.4vw, 38px); }
+  .pcard__sub { font-size: 15px; }
+  .pcard__desc { font-size: 14.5px; line-height: 1.6; }
+  .pcard__tags { gap: 6px; margin-top: 12px; }
+  .pcard__tags li { font-size: 12px; padding: 5px 10px; }
+  .pcard__foot { gap: 8px; }
+  .pcard__role { font-size: 12px; }
+  .pcard__btn { font-size: 11.5px; padding: 10px 14px; }
+  .pcard__frame { height: 170px; }
+  .pcard__pips { left: 9px; bottom: 12px; }
+
+  .lightbox { padding: 12px; }
+  .lightbox__stage { gap: 4px; }
+  .lightbox__nav { width: 32px; height: 32px; font-size: 12px; }
+
+  /* skill di ponsel */
+  .skill { padding-bottom: 76px; }
+  .slist { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .slist__item {
+    grid-template-columns: 7px auto minmax(0, 1fr);
+    gap: 3px 7px;
+    padding: 11px 10px;
+  }
+  .slist__name { font-size: 12px; }
+  .slist__desc { font-size: 12px; line-height: 1.45; }
+  .slist__dot { margin-top: 6px; }
+  .deck { width: min(100%, 386px); gap: 8px; }
+  .scard__head { font-size: 9.5px; }
+  .scard__name { font-size: clamp(8.5px, calc(var(--cw, 140px) * 0.095), 10px); letter-spacing: -0.01em; }
+  .scard__note { display: none; }
+  .scard__crest svg { width: 44%; max-width: 28px; }
+
+  /* organisasi di ponsel */
+  .org { padding-top: 74px; padding-bottom: 64px; }
+  .ocard__info { padding: 16px; }
+  .ocard__name { font-size: clamp(21px, 6.6vw, 28px); }
+  .ocard__desc { font-size: 13px; line-height: 1.56; }
+  .ocard__tags { gap: 5px; }
+  .ocard__tags li { font-size: 11px; padding: 4px 8px; }
+  .ocard__media .pcard__frame { height: 180px; }
+  .ocard__org { font-size: 11px; }
+
+  /* contact di ponsel */
+  .contact { padding-top: 74px; }
+  .contact__title { font-size: clamp(28px, 9vw, 44px); }
+  .clink__a {
+    grid-template-columns: 26px minmax(0, 1fr) 22px;
+    gap: 4px 12px;
+    row-gap: 5px;
+    padding: 18px 4px;
+  }
+  .clink__a:hover,
+  .clink__a:focus-visible { padding-left: 14px; }
+  .clink__idx { grid-row: 1; }
+  .clink__k { grid-column: 2; grid-row: 1; font-size: 11px; }
+  .clink__v { grid-column: 2; grid-row: 2; font-size: clamp(14px, 4.6vw, 19px); }
+  .clink__arrow { grid-column: 3; grid-row: 1 / span 2; }
+  .contact__foot { font-size: 10.5px; letter-spacing: 0.1em; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; }
+  .about__frame { clip-path: none; transform: none; opacity: 1; }
+  .about__frame img { transform: none; filter: none; }
+  .about__body { opacity: 1; transform: none; }
+  .about__title { filter: none; }
+  .pcard__info > * { opacity: 1; transform: none; }
+  .pcard__frame { transform: none; }
+  .pcard { transform: none; }
+  .pcard__shot { transition: none; }
+  .slist__item { opacity: 1; transform: none; }
+  .ocard { opacity: 1; transform: none; }
+  .scard { opacity: 1; transform: none; filter: none; }
+  .scard__face { transform: none; }
+  .skill__grid { min-height: 0; }
+  .deckbox { position: static; }
+  .contact__dot { animation: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001s !important;
+  }
+  .cursor { display: none; }
+  body { cursor: auto; }
+}

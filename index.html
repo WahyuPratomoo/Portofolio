@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wahyu Pratomo — Electronics &amp; Hardware</title>
+  <meta name="description" content="Beranda portofolio Wahyu Pratomo — elektronika, hardware, dan firmware." />
+  <meta name="theme-color" content="#121110" />
+  <link rel="icon"
+    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' fill='%23121110'/%3E%3Cpath d='M13 2L3 14h9l-1 8 10-12h-9l1-8z' fill='%23ede6dc'/%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body class="is-loading">
+
+  <!-- kursor kustom: cincin + titik -->
+  <div class="cursor" id="cursor" aria-hidden="true">
+    <span class="cursor__ring"></span>
+    <span class="cursor__dot"></span>
+  </div>
+
+  <!-- ============ LOADING ============ -->
+  <!-- penutup tata letak sampai aset siap. Progresnya dibaca dari lima
+       petir yang menyala bertahap 1 -> 5 (tanpa meter maupun teks),
+       lalu kelimanya menyatu dan melepaskan sengatan listrik ke Beranda. -->
+  <div class="loader" id="loader" role="status" aria-label="Memuat halaman">
+    <div class="loader__bg"></div>
+    <span class="loader__flash" aria-hidden="true"></span>
+
+    <div class="loader__scene">
+      <div class="loader__row">
+        <span class="loader__slot" style="--d:-72px"><svg class="bolt loader__bolt" viewBox="0 0 24 24">
+            <use href="#bolt" />
+          </svg></span>
+        <span class="loader__slot" style="--d:-36px"><svg class="bolt loader__bolt" viewBox="0 0 24 24">
+            <use href="#bolt" />
+          </svg></span>
+        <span class="loader__slot" style="--d:0px"><svg class="bolt loader__bolt" viewBox="0 0 24 24">
+            <use href="#bolt" />
+          </svg></span>
+        <span class="loader__slot" style="--d:36px"><svg class="bolt loader__bolt" viewBox="0 0 24 24">
+            <use href="#bolt" />
+          </svg></span>
+        <span class="loader__slot" style="--d:72px"><svg class="bolt loader__bolt" viewBox="0 0 24 24">
+            <use href="#bolt" />
+          </svg></span>
+      </div>
+
+      <div class="loader__mark" aria-hidden="true">
+        <svg class="bolt loader__solo" viewBox="0 0 24 24">
+          <use href="#bolt" />
+        </svg>
+      </div>
+
+      <span class="loader__flare" aria-hidden="true"></span>
+      <span class="loader__arcs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span>
+    </div>
+  </div>
+
+  <!-- simbol petir -->
+  <svg width="0" height="0" aria-hidden="true" style="position:absolute">
+    <defs>
+      <symbol id="bolt" viewBox="0 0 24 24">
+        <path d="M13 2 L3 14 h9 l-1 8 10 -12 h-9 l1 -8 Z" fill="currentColor" />
+      </symbol>
+    </defs>
+  </svg>
+
+  <header class="head">
+    <a class="logo" href="#beranda" aria-label="Beranda">
+      <span class="logo__first">WAHYU</span><span class="logo__last">PRATOMO</span>
+    </a>
+
+    <nav class="head__nav" aria-label="Navigasi utama">
+      <a href="#beranda">BERANDA</a>
+      <a href="#about">ABOUT</a>
+      <a href="#kuliah">CLASS</a>
+      <a href="#project">PROJECT</a>
+      <a href="#skill">SKILL</a>
+      <span class="head__break" aria-hidden="true"></span>
+      <a href="#organisasi">ORGANIZATION</a>
+      <a href="#contact">CONTACT</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- ============ BERANDA ============ -->
+    <section class="home" id="beranda">
+      <div class="home__meta">
+        <span>(PORTOFOLIO / ©2026)</span>
+        <span>HARDWARE &amp; ELECTRONICS</span>
+        <span>BOGOR, INDONESIA</span>
+      </div>
+
+      <h1 class="name" aria-label="Wahyu Pratomo">
+        <span class="name__line name__line--first" data-depth="0.55"><span class="name__inner">WAHYU</span></span>
+        <span class="name__line name__line--second" data-depth="0.3"><span class="name__inner">PRATOMO</span></span>
+      </h1>
+
+      <div class="home__foot">
+        <p class="home__intro">
+          Mengembangkan sistem elektronika dan perangkat keras dari
+          perancangan sirkuit, PCB, hingga firmware untuk riset, robotika,
+          dan proyek mandiri.
+        </p>
+
+        <a class="scroll-cue" href="#about">
+          <span aria-hidden="true">↓</span> SCROLL, GENTLY
+        </a>
+
+        <a class="pill pill--lg" href="#project">
+          <span>LIHAT PROYEK</span>
+          <span class="pill__arrow" aria-hidden="true">→</span>
+        </a>
+      </div>
+
+      <!-- garis sirkuit tipis, parallax -->
+      <svg class="circuit" viewBox="0 0 1440 900" preserveAspectRatio="none" aria-hidden="true">
+        <g class="circuit__g" data-depth="0.15">
+          <path d="M-20 640 H120 V520 H300 V610 H520" />
+          <path d="M1180 200 H1300 V330 H1440" />
+          <path d="M900 760 H1060 V850 H1240" />
+          <circle cx="120" cy="520" r="3" />
+          <circle cx="300" cy="610" r="3" />
+          <circle cx="1180" cy="200" r="3" />
+          <circle cx="1060" cy="850" r="3" />
+        </g>
+      </svg>
+    </section>
+
+    <!-- ============ ABOUT ============ -->
+    <section class="about" id="about" aria-labelledby="about-title">
+      <div class="hd hd--about reveal" data-reveal>
+        <span class="hd__no">01</span>
+        <span class="hd__body">
+          <span class="hd__k">Profil &amp; lintasan</span>
+        </span>
+        <span class="hd__s">Bogor, Indonesia · 2024—2028</span>
+      </div>
+
+      <div class="about__grid">
+        <figure class="about__photo reveal" data-reveal>
+          <div class="about__frame">
+            <img src="assets/wahyu-portrait.jpg" alt="Wahyu Pratomo memakai blazer almamater IPB University"
+              width="1500" height="2666" loading="lazy" decoding="async" />
+            <span class="about__tag">IPB / 2026</span>
+          </div>
+          <figcaption class="about__cap">
+            <span>WAHYU PRATOMO — BOGOR</span>
+          </figcaption>
+        </figure>
+
+        <div class="about__body">
+          <p class="about__eyebrow reveal" data-reveal style="--d: 60ms">(TENTANG SAYA)</p>
+
+          <h2 class="about__title reveal" id="about-title" data-reveal style="--d: 130ms">
+            Dari skema di atas kertas jadi alat yang benar-benar bekerja.
+          </h2>
+
+          <p class="about__lead reveal" data-reveal style="--d: 210ms">
+            Saya Wahyu Pratomo, mahasiswa D4 Teknologi Rekayasa Komputer
+            IPB University dengan spesialisasi pengembangan
+            hardware dan elektronika terapan.
+          </p>
+
+          <p class="about__text reveal" data-reveal style="--d: 280ms">
+            Fondasi elektronika saya dimulai dari jurusan Teknik Elektronika
+            SMKN 2 Bogor, lalu berkembang lewat proyek riset, tim robotika,
+            dan organisasi. Saya terbiasa merancang skematik rangkaian, mendesain
+            tata letak PCB di DipTrace, memilih komponen yang tepat, menyolder,
+            menulis firmware, hingga melakukan troubleshooting saat rangkaian
+            mengalami kendala.
+          </p>
+
+          <p class="about__text reveal" data-reveal style="--d: 340ms">
+            Bagi saya, sistem yang baik bukan sekadar berfungsi di meja uji,
+            melainkan efisien, andal, aman, dan mudah dirawat saat diterapkan
+            pada kebutuhan nyata.
+          </p>
+
+          <dl class="about__facts reveal" data-reveal style="--d: 420ms">
+            <div>
+              <dt>Nama</dt>
+              <dd>Wahyu Pratomo</dd>
+            </div>
+            <div>
+              <dt>Pendidikan</dt>
+              <dd>IPB University — D4 Teknologi Rekayasa Komputer, 2024–2028</dd>
+            </div>
+            <div>
+              <dt>IPK</dt>
+              <dd>3.86 / 4.00</dd>
+            </div>
+            <div>
+              <dt>Fokus</dt>
+              <dd>Hardware, firmware, PLC , robotika</dd>
+            </div>
+            <div>
+              <dt>Lokasi</dt>
+              <dd>Bogor, Jawa Barat — Indonesia</dd>
+            </div>
+          </dl>
+
+          <a class="about__next reveal" data-reveal style="--d: 500ms" href="#kuliah">
+            <span>LANJUT KE MATA KULIAH</span>
+            <span aria-hidden="true">↓</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ MATA KULIAH (ROADMAP) ============ -->
+    <!--
+      Roadmap: satu garis tebal digambar bertahap mengikuti gulir.
+      DAFTAR LANGKAH ADA DI js/main.js (bagian 8b) pada array `steps`.
+      Menambah/mengganti langkah = ubah array itu saja: title, desc,
+      icon (SVG), side ("left"/"right"), dan at (posisi 0–1 di jalur).
+      Titik, garis, dan tinggi panggung dihitung otomatis dari jumlah
+      langkah — tidak ada koordinat manual di HTML.
+    -->
+    <section class="kuliah" id="kuliah" aria-labelledby="kuliah-title">
+      <div class="hd hd--kuliah reveal" data-reveal>
+        <span class="hd__no">02</span>
+        <span class="hd__body">
+          <span class="hd__k">Mata kuliah</span>
+          <span class="hd__s">Sebelas mata kuliah · Semester 1 — 5</span>
+        </span>
+        <svg class="hd__trace" viewBox="0 0 110 16" fill="none" aria-hidden="true">
+          <path d="M2 8c8-9 16 9 24 0s16 9 24 0 16 9 24 0 16 9 24 0" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" />
+        </svg>
+      </div>
+
+      <div class="roadmap" id="roadmap">
+        <div class="roadmap__intro">
+          <h2 class="kuliah__title reveal" id="kuliah-title" data-reveal>
+            Bekal kelas yang saya bawa ke meja kerja.
+          </h2>
+          <p class="kuliah__lede reveal" data-reveal style="--d: 120ms">
+            Sebelas mata kuliah relevan dari Semester 1 sampai 5 mulai dari elektronika dasar
+            dan rangkaian logika, lalu sensor, PLC, robotika, sampai machine
+            learning dan embedded system. Satu titik untuk satu mata kuliah.
+          </p>
+        </div>
+
+        <div class="roadmap__stage" aria-label="Roadmap mata kuliah">
+          <svg class="roadmap__svg" aria-hidden="true" focusable="false">
+            <path class="roadmap__path roadmap__path--soft"></path>
+            <path class="roadmap__path roadmap__path--main"></path>
+            <g class="roadmap__head">
+              <ellipse class="roadmap__head-glow" rx="1" ry="1"></ellipse>
+              <rect class="roadmap__head-core" x="-1" y="-0.5" width="2" height="1"></rect>
+            </g>
+          </svg>
+
+          <ol class="roadmap__list"></ol>
+        </div>
+      </div>
+
+      <a class="about__next kuliah__next reveal" data-reveal href="#project">
+        <span>LANJUT KE PROYEK</span>
+        <span aria-hidden="true">↓</span>
+      </a>
+    </section>
+
+    <!-- ============ PROJECT ============ -->
+    <!--
+      CARA MENGGANTI / MENAMBAH GAMBAR
+      1. Ganti file di assets/projects/<slug>/01.jpg, 02.jpg, dst.
+      2. Kalau jumlah gambar berubah, salin satu blok <img class="pcard__shot"> di
+         dalam .pcard__slides lalu ubah angka pada src dan alt.
+         Penghitung "01 / 03" dan titik navigasi dibuat otomatis oleh JS.
+    -->
+    <section class="project" id="project" aria-labelledby="project-title">
+      <!-- header khas Project: pita rol dengan tajuk besar & penanda tahun -->
+      <div class="hd hd--project reveal" data-reveal>
+        <span class="hd__ribbon">03</span>
+        <span class="hd__body">
+          <span class="hd__k">Karya &amp; Riset</span>
+          <span class="hd__s">Lima dokumentasi · 2024 — 2026</span>
+        </span>
+        <span class="hd__ticks" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+      </div>
+
+      <div class="project__intro">
+        <h2 class="project__title reveal" id="project-title" data-reveal>
+          Yang saya bangun, bukan cuma yang saya gambar.
+        </h2>
+        <p class="project__lede reveal" data-reveal style="--d: 120ms">
+          Lima proyek mulai dari riset pertanian, robotika, hingga otomasi.
+          Tiap kartu menyimpan dokumentasinya sendiri
+          geser gambarnya, atau klik untuk memperbesar.
+        </p>
+      </div>
+
+      <div class="pstack">
+        <!-- ---------- 01 SMILE ---------- -->
+        <article class="pcard" style="--i: 0; --accent: #8ea6ff">
+          <span class="pcard__tab">
+            <span class="pcard__num">01</span>
+            <span class="pcard__tabname">SMILE</span>
+          </span>
+
+          <div class="pcard__win">
+            <div class="pcard__bar">
+              <span class="pcard__path">~/proyek/smart-soil-monitoring</span>
+              <span class="pcard__year">2026</span>
+            </div>
+
+            <div class="pcard__body">
+              <div class="pcard__info">
+                <p class="pcard__cat"><span class="pcard__dot" aria-hidden="true"></span>IOT · IRIGASI OTOMATIS</p>
+                <h3 class="pcard__title">SMILE</h3>
+                <p class="pcard__sub">Smart Soil Monitoring System</p>
+                <p class="pcard__desc">
+                  Sistem monitoring kondisi tanah berbasis IoT dan irigasi otomatis
+                  dengan machine learning Random Forest serta aplikasi mobile,
+                  dikembangkan dari sisi skematik, integrasi hardware, dan firmware.
+                </p>
+                <ul class="pcard__tags">
+                  <li>ESP32 S3</li>
+                  <li>Sensor Soil</li>
+                  <li>Machine Learning</li>
+                  <li>Mobile App</li>
+                </ul>
+                <div class="pcard__foot">
+                  <span class="pcard__role">HARDWARE · FIRMWARE</span>
+                  <button class="pcard__btn" type="button" data-open="smile">
+                    Buka galeri <span aria-hidden="true">↗</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="pcard__media" data-gallery="smile" data-label="SMILE">
+                <div class="pcard__frame">
+                  <div class="pcard__slides">
+                    <img class="pcard__shot is-active" src="assets/projects/smile/01.jpg" alt="SMILE — dokumentasi 1"
+                      width="1600" height="1000" loading="lazy" decoding="async" />
+                    <img class="pcard__shot" src="assets/projects/smile/02.jpg" alt="SMILE — dokumentasi 2" width="1600"
+                      height="1000" loading="lazy" decoding="async" />
+                    <img class="pcard__shot" src="assets/projects/smile/03.jpg" alt="SMILE — dokumentasi 3" width="1600"
+                      height="1000" loading="lazy" decoding="async" />
+                  </div>
+                  <div class="pcard__ctrl">
+                    <button class="pcard__arrow" type="button" data-prev aria-label="Gambar sebelumnya">←</button>
+                    <span class="pcard__count"><b>01</b> / 03</span>
+                    <button class="pcard__arrow" type="button" data-next aria-label="Gambar berikutnya">→</button>
+                  </div>
+                  <div class="pcard__pips"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- ---------- 02 DREAMPALM ---------- -->
+        <article class="pcard" style="--i: 1; --accent: #7fd7a8">
+          <span class="pcard__tab">
+            <span class="pcard__num">02</span>
+            <span class="pcard__tabname">DREAMPALM</span>
+          </span>
+
+          <div class="pcard__win">
+            <div class="pcard__bar">
+              <span class="pcard__path">~/proyek/dreampalm-drone</span>
+              <span class="pcard__year">2026</span>
+            </div>
+
+            <div class="pcard__body">
+              <div class="pcard__info">
+                <p class="pcard__cat"><span class="pcard__dot" aria-hidden="true"></span>UAV · COMPUTER VISION</p>
+                <h3 class="pcard__title">DREAMPALM</h3>
+                <p class="pcard__sub">Drone Pertanian Semi-Otonom</p>
+                <p class="pcard__desc">
+                  Drone pertanian semi-otonom dengan integrasi sistem mekanik,
+                  elektronik, sensor kamera, mikrokontroler, dan computer vision
+                  vision guna mendeteksi busuk pangkal batang sawit, melakukan
+                  perakitan kerangka serta kalibrasi motor.
+                </p>
+                <ul class="pcard__tags">
+                  <li>UAV</li>
+                  <li>Computer Vision</li>
+                  <li>Machine Learning</li>
+                </ul>
+                <div class="pcard__foot">
+                  <span class="pcard__role">HARDWARE SUPPORT</span>
+                  <button class="pcard__btn" type="button" data-open="dreampalm">
+                    Buka galeri <span aria-hidden="true">↗</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="pcard__media" data-gallery="dreampalm" data-label="DREAMPALM">
+                <div class="pcard__frame">
+                  <div class="pcard__slides">
+                    <img class="pcard__shot is-active" src="assets/projects/dreampalm/01.jpg"
+                      alt="Dreampalm — dokumentasi 1" width="1600" height="1000" loading="lazy" decoding="async" />
+                    <img class="pcard__shot" src="assets/projects/dreampalm/02.jpg" alt="Dreampalm — dokumentasi 2"
+                      width="1600" height="1000" loading="lazy" decoding="async" />
+                    <img class="pcard__shot" src="assets/projects/dreampalm/03.jpg" alt="Dreampalm — dokumentasi 3"
+                      width="1600" height="1000" loading="lazy" decoding="async" />
+                  </div>
+                  <div class="pcard__ctrl">
+                    <button class="pcard__arrow" type="button" data-prev aria-label="Gambar sebelumnya">←</button>
+                    <span class="pcard__count"><b>01</b> / 03</span>
+                    <button class="pcard__arrow" type="button" data-next aria-label="Gambar berikutnya">→</button>
+                  </div>
+                  <div class="pcard__pips"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- ---------- 03 ANTRAC ---------- -->
+        <article class="pcard" style="--i: 2; --accent: #f2a65a">
+          <span class="pcard__tab">
+            <span class="pcard__num">03</span>
+            <span class="pcard__tabname">ANTRAC</span>
+          </span>
+
+          <div class="pcard__win">
+            <div class="pcard__bar">
+              <span class="pcard__path">~/proyek/antrac-tank</span>
+              <span class="pcard__year">2026</span>
+            </div>
+
+            <div class="pcard__body">
+              <div class="pcard__info">
+                <p class="pcard__cat"><span class="pcard__dot" aria-hidden="true"></span>ROBOTIKA · DIGITAL LOGIC</p>
+                <h3 class="pcard__title">ANTRAC</h3>
+                <p class="pcard__sub">Robot Tank Berbasis PLD</p>
+                <p class="pcard__desc">
+                  Sistem kendali robot tank tanpa mikrokontroler, bertumpu pada IC logika
+                  terprogram (PLD) dan sistem keamanan perangkat keras berlapis
+                  agar aman dari kerusakan listrik, dikembangkan dengan memimpin
+                  tim elektronika, merancang konsep sirkuit awal, serta menyusun
+                  RAB.
+                </p>
+                <ul class="pcard__tags">
+                  <li>PLD</li>
+                  <li>Digital Logic</li>
+                  <li>Hardware Security</li>
+                </ul>
+                <div class="pcard__foot">
+                  <span class="pcard__role">KETUA DIVISI ELEKTRONIKA</span>
+                  <button class="pcard__btn" type="button" data-open="antrac">
+                    Buka galeri <span aria-hidden="true">↗</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="pcard__media" data-gallery="antrac" data-label="ANTRAC">
+                <div class="pcard__frame">
+                  <div class="pcard__slides">
+                    <img class="pcard__shot is-active" src="assets/projects/antrac/01.jpg" alt="Antrac — dokumentasi 1"
+                      width="1600" height="1000" loading="lazy" decoding="async" />
+                    <img class="pcard__shot" src="assets/projects/antrac/02.jpg" alt="Antrac — dokumentasi 2"
+                      width="1600" height="1000" loading="lazy" decoding="async" />
+                    <img class="pcard__shot" src="assets/projects/antrac/03.jpg" alt="Antrac — dokumentasi 3"
+                      width="1600" height="1000" loading="lazy" decoding="async" />
+                  </div>
+                  <div class="pcard__ctrl">
+                    <button class="pcard__arrow" type="button" data-prev aria-label="Gambar sebelumnya">←</button>
+                    <span class="pcard__count"><b>01</b> / 03</span>
+                    <button class="pcard__arrow" type="button" data-next aria-label="Gambar berikutnya">→</button>
+                  </div>
+                  <div class="pcard__pips"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- ---------- 04 WTP ---------- -->
+        <article class="pcard" style="--i: 3; --accent: #6ec8d8">
+          <span class="pcard__tab">
+            <span class="pcard__num">04</span>
+            <span class="pcard__tabname">WTP</span>
+          </span>
+
+          <div class="pcard__win">
+            <div class="pcard__bar">
+              <span class="pcard__path">~/proyek/water-treatment-plant</span>
+              <span class="pcard__year">2026</span>
+            </div>
+
+            <div class="pcard__body">
+              <div class="pcard__info">
+                <p class="pcard__cat"><span class="pcard__dot" aria-hidden="true"></span>OTOMASI INDUSTRI · PLC</p>
+                <h3 class="pcard__title">WTP</h3>
+                <p class="pcard__sub">Water Treatment Plant Control</p>
+                <p class="pcard__desc">
+                  Sistem otomasi Water Treatment Plant berbasis PLC Omron dan HMI guna mengatur
+                  tahapan pengolahan air bersih secara otomatis, terintegrasi, dan mudah
+                  dipantau secara real-time.
+                </p>
+                <ul class="pcard__tags">
+                  <li>PLC Omron</li>
+                  <li>HMI</li>
+                  <li>Interlock</li>
+                </ul>
+                <div class="pcard__foot">
+                  <span class="pcard__role">PLC Programmer</span>
+                  <button class="pcard__btn" type="button" data-open="wtp">
+                    Buka galeri <span aria-hidden="true">↗</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="pcard__media" data-gallery="wtp" data-label="WTP">
+                <div class="pcard__frame">
+                  <div class="pcard__slides">
+                    <img class="pcard__shot is-active" src="assets/projects/wtp/01.jpg"
+                      alt="Water Treatment Plant — dokumentasi 1" width="1600" height="1000" loading="lazy"
+                      decoding="async" />
+                    <img class="pcard__shot" src="assets/projects/wtp/02.jpg"
+                      alt="Water Treatment Plant — dokumentasi 2" width="1600" height="1000" loading="lazy"
+                      decoding="async" />
+                    <img class="pcard__shot" src="assets/projects/wtp/03.jpg"
+                      alt="Water Treatment Plant — dokumentasi 3" width="1600" height="1000" loading="lazy"
+                      decoding="async" />
+                  </div>
+                  <div class="pcard__ctrl">
+                    <button class="pcard__arrow" type="button" data-prev aria-label="Gambar sebelumnya">←</button>
+                    <span class="pcard__count"><b>01</b> / 03</span>
+                    <button class="pcard__arrow" type="button" data-next aria-label="Gambar berikutnya">→</button>
+                  </div>
+                  <div class="pcard__pips"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- ---------- 05 BUGBUSTER ---------- -->
+        <article class="pcard" style="--i: 4; --accent: #e2c96a">
+          <span class="pcard__tab">
+            <span class="pcard__num">05</span>
+            <span class="pcard__tabname">BUGBUSTER</span>
+          </span>
+
+          <div class="pcard__win">
+            <div class="pcard__bar">
+              <span class="pcard__path">~/proyek/eco-bugbuster</span>
+              <span class="pcard__year">2025</span>
+            </div>
+
+            <div class="pcard__body">
+              <div class="pcard__info">
+                <p class="pcard__cat"><span class="pcard__dot" aria-hidden="true"></span>ENERGI SURYA · PRODUK</p>
+                <h3 class="pcard__title">ECO BUGBUSTER</h3>
+                <p class="pcard__sub">Eco UV Pest Trap</p>
+                <p class="pcard__desc">
+                  Perangkap hama berbasis cahaya ultraviolet
+                  yang memanfaatkan tenaga surya sebagai sumber
+                  energi perangkat.
+                </p>
+                <ul class="pcard__tags">
+                  <li>Solar Panel</li>
+                  <li>UV Lamp</li>
+                  <li>Electronics</li>
+                </ul>
+                <div class="pcard__foot">
+                  <span class="pcard__role">DESAIN · PERAKITAN</span>
+                  <button class="pcard__btn" type="button" data-open="bugbuster">
+                    Buka galeri <span aria-hidden="true">↗</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="pcard__media" data-gallery="bugbuster" data-label="ECO BUGBUSTER">
+                <div class="pcard__frame">
+                  <div class="pcard__slides">
+                    <img class="pcard__shot is-active" src="assets/projects/bugbuster/01.jpg"
+                      alt="Eco BugBuster — dokumentasi 1" width="1600" height="1000" loading="lazy" decoding="async" />
+                    <img class="pcard__shot" src="assets/projects/bugbuster/02.jpg" alt="Eco BugBuster — dokumentasi 2"
+                      width="1600" height="1000" loading="lazy" decoding="async" />
+                  </div>
+                  <div class="pcard__ctrl">
+                    <button class="pcard__arrow" type="button" data-prev aria-label="Gambar sebelumnya">←</button>
+                    <span class="pcard__count"><b>01</b> / 02</span>
+                    <button class="pcard__arrow" type="button" data-next aria-label="Gambar berikutnya">→</button>
+                  </div>
+                  <div class="pcard__pips"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============ SKILL ============ -->
+    <section class="skill" id="skill" aria-labelledby="skill-title">
+      <!-- header khas Skill: nomor mengapung + matriks 3 × 3 kecil -->
+      <div class="hd hd--skill reveal" data-reveal>
+        <span class="hd__no">04</span>
+        <span class="hd__body">
+          <span class="hd__k">Keterampilan</span>
+          <span class="hd__s">Sembilan bekal teknis &amp; sosial</span>
+        </span>
+        <span class="hd__matrix" aria-hidden="true">
+          <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+        </span>
+      </div>
+
+      <div class="skill__intro">
+        <h2 class="skill__title reveal" id="skill-title" data-reveal>
+          Sembilan keterampilan yang saya bawa ke setiap proyek.
+        </h2>
+        <p class="skill__lede reveal" data-reveal style="--d: 120ms">
+          Mulai dari skematik, PCB, komponen, menyolder, membuat firmware, dan
+          troubleshooting ditambah kerja tim serta kepemimpinan.
+          Gulir kartu lalu lihat detailnya di bawah
+        </p>
+      </div>
+
+      <div class="skill__grid">
+        <div class="deckbox">
+          <div class="deck" id="deck" aria-label="Kartu keterampilan">
+            <button class="scard" type="button" data-skill="0" aria-label="Keterampilan 01: Skematik Rangkaian"
+              style="--i: 0; --accent: #8ea6ff">
+              <span class="scard__face">
+                <span class="scard__head">
+                  <span class="scard__idx">01</span>
+                  <span class="scard__suit" aria-hidden="true">✦</span>
+                </span>
+                <span class="scard__crest" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M4 7h5l3 4h8M4 17h5l3-4M17 7h3v10h-3" />
+                    <circle cx="4" cy="7" r="1.4" />
+                    <circle cx="4" cy="17" r="1.4" />
+                  </svg>
+                </span>
+                <span class="scard__foot">
+                  <span class="scard__name">Skematik</span>
+                  <span class="scard__note">Rangkaian</span>
+                </span>
+              </span>
+            </button>
+
+            <button class="scard" type="button" data-skill="1" aria-label="Keterampilan 02: Pemilihan Komponen"
+              style="--i: 1; --accent: #f2a65a">
+              <span class="scard__face">
+                <span class="scard__head">
+                  <span class="scard__idx">02</span>
+                  <span class="scard__suit" aria-hidden="true">✧</span>
+                </span>
+                <span class="scard__crest" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <rect x="7" y="7" width="10" height="10" rx="1.5" />
+                    <path d="M10 3v4M14 3v4M10 17v4M14 17v4M3 10h4M3 14h4M17 10h4M17 14h4" />
+                  </svg>
+                </span>
+                <span class="scard__foot">
+                  <span class="scard__name">Komponen</span>
+                  <span class="scard__note">Pemilihan</span>
+                </span>
+              </span>
+            </button>
+
+            <button class="scard" type="button" data-skill="2" aria-label="Keterampilan 03: Pemrograman Firmware"
+              style="--i: 2; --accent: #7fd7a8">
+              <span class="scard__face">
+                <span class="scard__head">
+                  <span class="scard__idx">03</span>
+                  <span class="scard__suit" aria-hidden="true">✦</span>
+                </span>
+                <span class="scard__crest" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M9 5 4 12l5 7M15 5l5 7-5 7" />
+                    <path d="M12 8v8" />
+                  </svg>
+                </span>
+                <span class="scard__foot">
+                  <span class="scard__name">Firmware</span>
+                  <span class="scard__note">Arduino IDE</span>
+                </span>
+              </span>
+            </button>
+
+            <button class="scard" type="button" data-skill="3" aria-label="Keterampilan 04: Troubleshooting"
+              style="--i: 3; --accent: #e8a5c8">
+              <span class="scard__face">
+                <span class="scard__head">
+                  <span class="scard__idx">04</span>
+                  <span class="scard__suit" aria-hidden="true">◇</span>
+                </span>
+                <span class="scard__crest" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <circle cx="10.5" cy="10.5" r="5.8" />
+                    <path d="M14.8 14.8 20.5 20.5" />
+                    <path d="M8.4 10.5h4.2M10.5 8.4v4.2" />
+                  </svg>
+                </span>
+                <span class="scard__foot">
+                  <span class="scard__name">Troubleshoot</span>
+                  <span class="scard__note">Analisis &amp; perbaikan</span>
+                </span>
+              </span>
+            </button>
+
+            <button class="scard" type="button" data-skill="4" aria-label="Keterampilan 05: Menyolder"
+              style="--i: 4; --accent: #6ec8d8">
+              <span class="scard__face">
+                <span class="scard__head">
+                  <span class="scard__idx">05</span>
+                  <span class="scard__suit" aria-hidden="true">⬡</span>
+                </span>
+                <span class="scard__crest" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <path
+                      d="M14.5 3.5a4.5 4.5 0 0 0 5.9 5.9L9.9 20.9a2.5 2.5 0 0 1-3.5 0l-1.3-1.3a2.5 2.5 0 0 1 0-3.5L14.5 3.5Z" />
+                    <path d="M13 15.5l-1.5-1.5" />
+                  </svg>
+                </span>
+                <span class="scard__foot">
+                  <span class="scard__name">Menyolder</span>
+                  <span class="scard__note">Presisi &amp; standar</span>
+                </span>
+              </span>
+            </button>
+
+            <button class="scard" type="button" data-skill="5" aria-label="Keterampilan 06: Mendesain PCB"
+              style="--i: 5; --accent: #e2c96a">
+              <span class="scard__face">
+                <span class="scard__head">
+                  <span class="scard__idx">06</span>
+                  <span class="scard__suit" aria-hidden="true">✦</span>
+                </span>
+                <span class="scard__crest" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <rect x="4" y="4" width="16" height="16" rx="2" />
+                    <path d="M8 8h4v4h4M8 16h3M16 8v3" />
+                    <circle cx="16" cy="16" r="1.6" />
+                    <circle cx="8" cy="8" r="1.2" />
+                  </svg>
+                </span>
+                <span class="scard__foot">
+                  <span class="scard__name">PCB</span>
+                  <span class="scard__note">DipTrace</span>
+                </span>
+              </span>
+            </button>
+
+            <button class="scard" type="button" data-skill="6" aria-label="Keterampilan 07: Kerjasama Tim"
+              style="--i: 6; --accent: #e88a8a">
+              <span class="scard__face">
+                <span class="scard__head">
+                  <span class="scard__idx">07</span>
+                  <span class="scard__suit" aria-hidden="true">✧</span>
+                </span>
+                <span class="scard__crest" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <circle cx="9.2" cy="9.2" r="4.4" />
+                    <circle cx="14.8" cy="14.8" r="4.4" />
+                  </svg>
+                </span>
+                <span class="scard__foot">
+                  <span class="scard__name">Tim</span>
+                  <span class="scard__note">Kerjasama</span>
+                </span>
+              </span>
+            </button>
+
+            <button class="scard" type="button" data-skill="7" aria-label="Keterampilan 08: Kepemimpinan"
+              style="--i: 7; --accent: #9ecb6a">
+              <span class="scard__face">
+                <span class="scard__head">
+                  <span class="scard__idx">08</span>
+                  <span class="scard__suit" aria-hidden="true">◇</span>
+                </span>
+                <span class="scard__crest" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M4 18 5.6 8.5l4.2 4 2.2-6 2.2 6 4.2-4 1.6 9.5H4Z" />
+                  </svg>
+                </span>
+                <span class="scard__foot">
+                  <span class="scard__name">Pemimpin</span>
+                  <span class="scard__note">Kepemimpinan</span>
+                </span>
+              </span>
+            </button>
+
+            <button class="scard" type="button" data-skill="8" aria-label="Keterampilan 09: Komunikasi"
+              style="--i: 8; --accent: #b79cf0">
+              <span class="scard__face">
+                <span class="scard__head">
+                  <span class="scard__idx">09</span>
+                  <span class="scard__suit" aria-hidden="true">✦</span>
+                </span>
+                <span class="scard__crest" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <path
+                      d="M4 5h16a1.5 1.5 0 0 1 1.5 1.5v8a1.5 1.5 0 0 1-1.5 1.5h-7.5L8 19.5v-3.5H4A1.5 1.5 0 0 1 2.5 14.5v-8A1.5 1.5 0 0 1 4 5Z" />
+                  </svg>
+                </span>
+                <span class="scard__foot">
+                  <span class="scard__name">Komunikasi</span>
+                  <span class="scard__note">Jelas &amp; terstruktur</span>
+                </span>
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="skill__legend reveal" data-reveal>
+        <div class="legend__head">
+          <span class="legend__k">Keterangan</span>
+          <span class="legend__rule" aria-hidden="true"></span>
+          <span class="legend__s">01 — 09</span>
+        </div>
+        <div class="slist" role="list" aria-label="Penjelasan keterampilan">
+          <div class="slist__item" role="listitem" data-skill="0" style="--i: 0; --accent: #8ea6ff">
+            <span class="slist__dot" aria-hidden="true"></span>
+            <span class="slist__idx">01</span>
+            <span class="slist__name">Skematik Rangkaian</span>
+            <span class="slist__desc">Rancang &amp; gambar skematik secara terstruktur</span>
+          </div>
+          <div class="slist__item" role="listitem" data-skill="1" style="--i: 1; --accent: #f2a65a">
+            <span class="slist__dot" aria-hidden="true"></span>
+            <span class="slist__idx">02</span>
+            <span class="slist__name">Pemilihan Komponen</span>
+            <span class="slist__desc">Pilih komponen efisien, andal &amp; hemat biaya</span>
+          </div>
+          <div class="slist__item" role="listitem" data-skill="2" style="--i: 2; --accent: #7fd7a8">
+            <span class="slist__dot" aria-hidden="true"></span>
+            <span class="slist__idx">03</span>
+            <span class="slist__name">Pemrograman Firmware</span>
+            <span class="slist__desc">Tulis &amp; unggah firmware mikrokontroler via Arduino IDE</span>
+          </div>
+          <div class="slist__item" role="listitem" data-skill="3" style="--i: 3; --accent: #e8a5c8">
+            <span class="slist__dot" aria-hidden="true"></span>
+            <span class="slist__idx">04</span>
+            <span class="slist__name">Troubleshooting</span>
+            <span class="slist__desc">Identifikasi, analisis &amp; atasi masalah rangkaian</span>
+          </div>
+          <div class="slist__item" role="listitem" data-skill="4" style="--i: 4; --accent: #6ec8d8">
+            <span class="slist__dot" aria-hidden="true"></span>
+            <span class="slist__idx">05</span>
+            <span class="slist__name">Menyolder</span>
+            <span class="slist__desc">Solder presisi, koneksi kuat &amp; sesuai standar</span>
+          </div>
+          <div class="slist__item" role="listitem" data-skill="5" style="--i: 5; --accent: #e2c96a">
+            <span class="slist__dot" aria-hidden="true"></span>
+            <span class="slist__idx">06</span>
+            <span class="slist__name">Mendesain PCB</span>
+            <span class="slist__desc">Rancang tata letak sirkuit tercetak dengan DipTrace</span>
+          </div>
+          <div class="slist__item" role="listitem" data-skill="6" style="--i: 6; --accent: #e88a8a">
+            <span class="slist__dot" aria-hidden="true"></span>
+            <span class="slist__idx">07</span>
+            <span class="slist__name">Kerjasama Tim</span>
+            <span class="slist__desc">Bekerja efektif dalam tim di setiap proyek</span>
+          </div>
+          <div class="slist__item" role="listitem" data-skill="7" style="--i: 7; --accent: #9ecb6a">
+            <span class="slist__dot" aria-hidden="true"></span>
+            <span class="slist__idx">08</span>
+            <span class="slist__name">Kepemimpinan</span>
+            <span class="slist__desc">Koordinasi tim teknis secara terencana &amp; tepat waktu</span>
+          </div>
+          <div class="slist__item" role="listitem" data-skill="8" style="--i: 8; --accent: #b79cf0">
+            <span class="slist__dot" aria-hidden="true"></span>
+            <span class="slist__idx">09</span>
+            <span class="slist__name">Komunikasi</span>
+            <span class="slist__desc">Sampaikan ide &amp; informasi jelas, terstruktur, efektif</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ ORGANISASI ============ -->
+    <!--
+      CARA MENGGANTI / MENAMBAH FOTO
+      1. Ganti file di assets/org/ipb-robotic-club/01.jpg, 02.jpg, dst.
+         dan assets/org/himavo-micro-it/01.jpg, 02.jpg, dst.
+      2. Kalau jumlah gambar berubah, salin satu blok <img class="pcard__shot">
+         di dalam .pcard__slides lalu ubah angka pada src dan alt.
+         Penghitung "01 / 02" dan titik navigasi dibuat otomatis oleh JS.
+      3. Foto boleh lanskap 16:10 (1600 × 1000 px) supaya tidak terpotong.
+    -->
+    <section class="org" id="organisasi" aria-labelledby="org-title">
+      <!-- header khas Organisasi: cap nomor bulat + garis waktu peran -->
+      <div class="hd hd--org reveal" data-reveal>
+        <span class="hd__stamp">05</span>
+        <span class="hd__body">
+          <span class="hd__k">Peran &amp; Kontribusi</span>
+          <span class="hd__s">Dua organisasi · 2024 — 2026</span>
+        </span>
+        <span class="hd__scale" aria-hidden="true">
+          <i>2024</i><i>2025</i><i>2026</i>
+        </span>
+      </div>
+
+      <div class="org__intro">
+        <h2 class="org__title reveal" id="org-title" data-reveal>
+          Tidak semua urusan selesai di papan rangkaian.
+        </h2>
+        <p class="org__lede reveal" data-reveal style="--d: 120ms">
+          Lewat IPB Robotic Club saya mendalami kelistrikan drone VTOL
+          sesuai standar keselamatan, sementara di Himavo Micro IT saya
+          mengasah koordinasi publik dan hubungan eksternal agar kegiatan
+          edukasi berjalan mulus.
+        </p>
+      </div>
+
+      <ul class="org__list">
+        <li class="org__item reveal" data-reveal>
+          <article class="ocard" style="--accent: #8ea6ff">
+            <div class="ocard__info">
+              <p class="ocard__cat">
+                <span class="ocard__dot" aria-hidden="true"></span>ROBOTIKA · UAV
+              </p>
+              <h3 class="ocard__name">IPB Robotic Club</h3>
+              <p class="ocard__role">Anggota Divisi Elektronika VTOL</p>
+              <p class="ocard__period">JAN 2026 — SEKARANG</p>
+              <p class="ocard__desc">
+                Mengembangkan dan merancang sistem kelistrikan yang efisien dan
+                inovatif untuk drone, memastikan kinerja optimal dan kepatuhan
+                terhadap standar keselamatan industri.
+              </p>
+              <ul class="ocard__tags">
+                <li>Drone VTOL</li>
+                <li>Sistem Kelistrikan</li>
+                <li>Keselamatan</li>
+              </ul>
+              <div class="ocard__foot">
+                <span class="ocard__org">IPB UNIVERSITY</span>
+                <button class="pcard__btn" type="button" data-open="ipb-robotic-club">
+                  Buka galeri <span aria-hidden="true">↗</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="ocard__media" data-gallery="ipb-robotic-club" data-label="IPB ROBOTIC CLUB">
+              <div class="pcard__frame">
+                <div class="pcard__slides">
+                  <img class="pcard__shot is-active" src="assets/org/ipb-robotic-club/01.jpg"
+                    alt="IPB Robotic Club — dokumentasi 1" width="1600" height="1000" loading="lazy" decoding="async" />
+                  <img class="pcard__shot" src="assets/org/ipb-robotic-club/02.jpg"
+                    alt="IPB Robotic Club — dokumentasi 2" width="1600" height="1000" loading="lazy" decoding="async" />
+                </div>
+                <div class="pcard__ctrl">
+                  <button class="pcard__arrow" type="button" data-prev aria-label="Gambar sebelumnya">←</button>
+                  <span class="pcard__count"><b>01</b> / 02</span>
+                  <button class="pcard__arrow" type="button" data-next aria-label="Gambar berikutnya">→</button>
+                </div>
+                <div class="pcard__pips"></div>
+              </div>
+            </div>
+          </article>
+        </li>
+
+        <li class="org__item reveal" data-reveal style="--d: 120ms">
+          <article class="ocard" style="--accent: #f2a65a">
+            <div class="ocard__info">
+              <p class="ocard__cat">
+                <span class="ocard__dot" aria-hidden="true"></span>HIMPUNAN · HUMAS
+              </p>
+              <h3 class="ocard__name">Himavo Micro IT</h3>
+              <p class="ocard__role">Anggota — Humas Micro Techno Education</p>
+              <p class="ocard__period">NOV 2024 — NOV 2025</p>
+              <p class="ocard__desc">
+                Mengemban peran sebagai humas dalam program kerja Micro Techno
+                Education (MTE) di SMKN 2 Kota Bogor, mencakup koordinasi
+                komunikasi publik dan pengelolaan hubungan dengan pihak eksternal
+                demi kesuksesan acara.
+              </p>
+              <ul class="ocard__tags">
+                <li>Humas</li>
+                <li>Micro Techno Education</li>
+                <li>SMKN 2 Bogor</li>
+              </ul>
+              <div class="ocard__foot">
+                <span class="ocard__org">HIMAVO MICRO IT</span>
+                <button class="pcard__btn" type="button" data-open="himavo-micro-it">
+                  Buka galeri <span aria-hidden="true">↗</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="ocard__media" data-gallery="himavo-micro-it" data-label="HIMAVO MICRO IT">
+              <div class="pcard__frame">
+                <div class="pcard__slides">
+                  <img class="pcard__shot is-active" src="assets/org/himavo-micro-it/01.jpg"
+                    alt="Himavo Micro IT — dokumentasi 1" width="1600" height="1000" loading="lazy" decoding="async" />
+                  <img class="pcard__shot" src="assets/org/himavo-micro-it/02.jpg" alt="Himavo Micro IT — dokumentasi 2"
+                    width="1600" height="1000" loading="lazy" decoding="async" />
+                </div>
+                <div class="pcard__ctrl">
+                  <button class="pcard__arrow" type="button" data-prev aria-label="Gambar sebelumnya">←</button>
+                  <span class="pcard__count"><b>01</b> / 02</span>
+                  <button class="pcard__arrow" type="button" data-next aria-label="Gambar berikutnya">→</button>
+                </div>
+                <div class="pcard__pips"></div>
+              </div>
+            </div>
+          </article>
+        </li>
+      </ul>
+    </section>
+
+    <!-- ============ CONTACT ============ -->
+    <section class="contact" id="contact" aria-labelledby="contact-title">
+      <!-- header khas Contact: label + nomor bagian berongga di kanan -->
+      <div class="hd hd--contact reveal" data-reveal>
+        <span class="hd__body">
+          <span class="hd__k">Kontak</span>
+        </span>
+        <span class="hd__idx" aria-hidden="true">06</span>
+      </div>
+
+      <div class="contact__intro">
+        <h2 class="contact__title reveal" id="contact-title" data-reveal>
+          Butuh tangan teknis untuk urusan hardware dan otomasi?
+        </h2>
+        <div class="contact__col">
+          <p class="contact__lede reveal" data-reveal style="--d: 120ms">
+            Membawa bekal perancangan skematik, PCB, perakitan, firmware, dan
+            troubleshooting untuk peluang magang di tim engineering maupun
+            industri. Pilih jalur kontak di bawah untuk terhubung.
+          </p>
+          <p class="contact__status reveal" data-reveal style="--d: 220ms">
+            <span class="contact__dot" aria-hidden="true"></span>
+            Mencari kesempatan magang · 2026
+          </p>
+        </div>
+      </div>
+
+      <ul class="clinks">
+        <li class="clink clink--cv reveal" data-reveal>
+          <a class="clink__a" href="assets/Wahyu-Pratomo-CV.pdf" download="Wahyu-Pratomo-CV.pdf">
+            <span class="clink__idx">01</span>
+            <span class="clink__k">Unduh CV</span>
+            <span class="clink__v">Wahyu-Pratomo-CV.pdf</span>
+            <span class="clink__arrow clink__arrow--dl" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"
+                stroke-linejoin="round">
+                <path d="M12 3v12" />
+                <path d="M7 11l5 5 5-5" />
+                <path d="M4 20h16" />
+              </svg>
+            </span>
+          </a>
+        </li>
+        <li class="clink reveal" data-reveal style="--d: 80ms">
+          <a class="clink__a" href="mailto:wahyupratomo221@gmail.com">
+            <span class="clink__idx">02</span>
+            <span class="clink__k">Email</span>
+            <span class="clink__v">wahyupratomo221@gmail.com</span>
+            <span class="clink__arrow" aria-hidden="true">↗</span>
+          </a>
+        </li>
+        <li class="clink reveal" data-reveal style="--d: 160ms">
+          <a class="clink__a" href="https://www.linkedin.com/in/wahyu-pratomo-bb3544325" target="_blank"
+            rel="noopener noreferrer">
+            <span class="clink__idx">03</span>
+            <span class="clink__k">LinkedIn</span>
+            <span class="clink__v">/in/wahyu-pratomo</span>
+            <span class="clink__arrow" aria-hidden="true">↗</span>
+          </a>
+        </li>
+        <li class="clink reveal" data-reveal style="--d: 240ms">
+          <a class="clink__a" href="tel:+6289524128626">
+            <span class="clink__idx">04</span>
+            <span class="clink__k">Telepon</span>
+            <span class="clink__v">+62 895-2412-8626</span>
+            <span class="clink__arrow" aria-hidden="true">↗</span>
+          </a>
+        </li>
+      </ul>
+
+      <div class="contact__foot">
+        <span>© 2026 Wahyu Pratomo — Bogor, Indonesia</span>
+        <a class="contact__top" href="#beranda">Kembali ke atas <span aria-hidden="true">↑</span></a>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ LIGHTBOX GALERI ============ -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Galeri proyek" hidden>
+    <button class="lightbox__close" type="button" data-close aria-label="Tutup">✕</button>
+    <div class="lightbox__stage">
+      <button class="lightbox__nav lightbox__nav--prev" type="button" data-lb-prev
+        aria-label="Gambar sebelumnya">←</button>
+      <img class="lightbox__img" alt="" />
+      <button class="lightbox__nav lightbox__nav--next" type="button" data-lb-next
+        aria-label="Gambar berikutnya">→</button>
+    </div>
+    <div class="lightbox__foot">
+      <span class="lightbox__label"></span>
+      <span class="lightbox__count"><b>01</b> / 03</span>
+    </div>
+  </div>
+
+  <script src="js/main.js"></script>
+</body>
+
+</html>

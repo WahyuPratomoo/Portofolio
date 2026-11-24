@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wahyu Pratomo — Elektronika & Hardware Engineer</title>
+  <meta name="description" content="Portofolio Wahyu Pratomo — mahasiswa Teknologi Rekayasa Komputer IPB University. Perancangan sirkuit, desain PCB, firmware, dan sistem elektronika terapan." />
+  <meta name="theme-color" content="#060707" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23060707'/%3E%3Ctext x='32' y='45' font-family='Arial Black' font-size='30' fill='%23c6ff3e' text-anchor='middle'%3EWP%3C/text%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <noscript><style>#boot{display:none!important}</style></noscript>
+
+  <!-- Tekstur film grain -->
+  <div class="grain" aria-hidden="true"></div>
+
+  <!-- Layar boot -->
+  <div class="boot" id="boot" aria-hidden="true">
+    <div class="boot__inner">
+      <div class="boot__row"><span>WAHYU PRATOMO</span><span>PORTFOLIO v2026</span></div>
+      <div class="boot__log">
+        <p>SKEMATIK <span>OK</span></p>
+        <p>PCB LAYOUT <span>OK</span></p>
+        <p>FIRMWARE <span>OK</span></p>
+      </div>
+      <div class="boot__bar"><span id="bootBar"></span></div>
+      <div class="boot__row"><span id="bootPct">0%</span><span>MEMUAT SISTEM…</span></div>
+    </div>
+  </div>
+
+  <!-- Kanvas jejak PCB (parallax) -->
+  <canvas id="pcb" class="pcb" aria-hidden="true"></canvas>
+
+  <div class="scroll-progress" aria-hidden="true"><span id="scrollBar"></span></div>
+
+  <header class="site-head">
+    <a class="brand" href="#top" aria-label="Kembali ke atas">
+      <span class="brand__mark">WP</span>
+      <span class="brand__dot"></span>
+    </a>
+    <div class="head__meta">ELEKTRONIKA TERAPAN <span>/</span> HARDWARE · FIRMWARE · IoT</div>
+  </header>
+
+  <main>
+    <!-- ============ HERO ============ -->
+    <section class="hero" id="top">
+      <p class="hero__eyebrow"><span class="pulse"></span> MAHASISWA TEKNOLOGI REKAYASA KOMPUTER — IPB UNIVERSITY</p>
+
+      <h1 class="hero__name" aria-label="Wahyu Pratomo">
+        <span class="word">WAHYU</span>
+        <span class="word">PRATOMO</span>
+      </h1>
+
+      <div class="hero__grid">
+        <p class="hero__intro">
+          Merancang sirkuit analog, mendesain PCB, merakit komponen, dan menulis firmware —
+          lalu memastikan setiap sambungan bekerja seperti seharusnya.
+        </p>
+        <nav class="hero__nav" aria-label="Navigasi utama">
+          <a href="#about">TENTANG</a>
+          <a href="#projects">PROYEK <sup>(05)</sup></a>
+          <a href="#skills">KETERAMPILAN</a>
+          <a href="#contact">KONTAK</a>
+        </nav>
+        <span class="hero__year">©2026</span>
+      </div>
+
+      <div class="hero__bottom">
+        <div class="id-card-wrap" data-parallax="0.35">
+          <div class="id-card" data-tilt>
+            <svg class="id-card__pcb" viewBox="0 0 240 300" aria-hidden="true">
+              <g fill="none" stroke="currentColor" stroke-width="1">
+                <path d="M-4 44H56V96H118V40H196" />
+                <path d="M-4 132H38V188H104V244H168" />
+                <path d="M244 70H188V126H210V180H150V230" />
+                <path d="M-4 268H72V224H132V270" />
+              </g>
+              <g fill="currentColor">
+                <circle cx="56" cy="96" r="2.6" /><circle cx="118" cy="40" r="2.6" />
+                <circle cx="38" cy="188" r="2.6" /><circle cx="104" cy="244" r="2.6" />
+                <circle cx="188" cy="126" r="2.6" /><circle cx="150" cy="230" r="2.6" />
+                <circle cx="72" cy="224" r="2.6" /><circle cx="132" cy="270" r="2.6" />
+              </g>
+            </svg>
+
+            <div class="id-card__top">
+              <span>DEVICE / WP-061</span>
+              <span class="id-card__status"><i></i> AKTIF</span>
+            </div>
+
+            <div class="id-card__mono">WP</div>
+
+            <div class="id-card__wave" aria-hidden="true">
+              <svg viewBox="0 0 200 34" preserveAspectRatio="none">
+                <path class="wave" d="M0 17 L10 17 L14 6 L18 28 L22 17 L40 17 L44 11 L48 23 L52 17 L78 17 L82 4 L86 30 L90 17 L118 17 L122 13 L126 21 L130 17 L156 17 L160 8 L164 26 L168 17 L200 17" />
+              </svg>
+            </div>
+
+            <div class="id-card__mid">
+              <span>TEKNOLOGI REKAYASA KOMPUTER</span>
+              <span>IPB / 2026</span>
+            </div>
+
+            <div class="id-card__barcode" aria-hidden="true"></div>
+            <div class="id-card__foot">
+              <span>BOGOR, ID</span>
+              <span>ID: 089524128626</span>
+            </div>
+          </div>
+          <span class="id-card-cap">PCB <i>/</i> SIAP DISOLDER</span>
+        </div>
+
+        <p class="hero__bio">
+          <strong>WAHYU PRATOMO</strong> adalah seorang <em>hardware & electronics enthusiast</em>
+          yang membangun pengalaman lewat sirkuit, sensor, dan kode — dari skematik pertama
+          sampai perangkat yang benar-benar bergerak.
+        </p>
+      </div>
+
+      <a class="scroll-hint" href="#about" aria-label="Gulir ke bagian tentang">
+        <span class="scroll-hint__line"></span>
+        <span class="scroll-hint__txt">SCROLL</span>
+      </a>
+    </section>
+
+    <!-- ============ MARQUEE ============ -->
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee__track">
+        <span>SKEMATIK RANGKAIAN</span><i>◆</i><span>PCB DESIGN</span><i>◆</i><span>FIRMWARE</span><i>◆</i>
+        <span>SOLDERING</span><i>◆</i><span>TROUBLESHOOTING</span><i>◆</i><span>PLC &amp; HMI</span><i>◆</i>
+        <span>IoT</span><i>◆</i><span>COMPUTER VISION</span><i>◆</i><span>DRONE ELECTRONICS</span><i>◆</i>
+        <span>SKEMATIK RANGKAIAN</span><i>◆</i><span>PCB DESIGN</span><i>◆</i><span>FIRMWARE</span><i>◆</i>
+        <span>SOLDERING</span><i>◆</i><span>TROUBLESHOOTING</span><i>◆</i><span>PLC &amp; HMI</span><i>◆</i>
+        <span>IoT</span><i>◆</i><span>COMPUTER VISION</span><i>◆</i><span>DRONE ELECTRONICS</span><i>◆</i>
+      </div>
+    </div>
+
+    <!-- ============ TENTANG ============ -->
+    <section class="section" id="about">
+      <div class="section__head" data-reveal>
+        <span class="section__no">01</span>
+        <h2 class="section__title">TENTANG</h2>
+        <span class="section__rule"></span>
+        <span class="section__meta">PROFIL</span>
+      </div>
+
+      <div class="about__grid">
+        <aside class="about__aside" data-reveal style="--d:.05s">
+          <div class="signal-box">
+            <div class="signal-box__title">SIGNAL CHAIN</div>
+            <div class="signal-box__row"><span>INPUT</span><p>Sensor · Kamera · Modul</p></div>
+            <div class="signal-box__row"><span>LOGIC</span><p>Mikrokontroler · PLD · PLC</p></div>
+            <div class="signal-box__row"><span>OUTPUT</span><p>Aktuator · HMI · Mobile App</p></div>
+            <div class="signal-box__pins" aria-hidden="true">
+              <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+            </div>
+          </div>
+
+          <div class="edu">
+            <div class="edu__title">PENDIDIKAN</div>
+            <div class="edu__item">
+              <span class="edu__year">2024 — 2028</span>
+              <p><strong>IPB University</strong>D4 Teknologi Rekayasa Komputer · IPK 3.81/4.00</p>
+            </div>
+            <div class="edu__item">
+              <span class="edu__year">2021 — 2024</span>
+              <p><strong>SMKN 2 Bogor</strong>Teknik Elektronika</p>
+            </div>
+          </div>
+        </aside>
+
+        <div class="about__copy">
+          <p class="about__lead" data-reveal style="--d:.1s">
+            Saya membangun sistem elektronika dari <span>skematik</span> hingga <span>firmware</span> —
+            dan memastikan setiap sambungan bekerja seperti seharusnya.
+          </p>
+          <p data-reveal style="--d:.15s">
+            Saat ini saya menempuh D4 Teknologi Rekayasa Komputer di IPB University dengan IPK
+            3.81/4.00. Fokus saya ada pada pengembangan hardware dan elektronika terapan: merancang
+            sirkuit analog, mendesain PCB, merakit komponen, hingga mendeteksi kerusakan pada
+            rangkaian elektronika.
+          </p>
+          <p data-reveal style="--d:.2s">
+            Di luar kelas saya terlibat dalam tim robotika dan riset kampus — dari sistem kelistrikan
+            drone VTOL, robot tank berbasis IC logika terprogram, sampai otomasi Water Treatment
+            Plant berbasis PLC. Saya percaya alat yang baik lahir dari skematik yang rapi, komponen
+            yang tepat, dan tim yang berkomunikasi jelas.
+          </p>
+
+          <div class="stats" data-reveal style="--d:.25s">
+            <div class="stat"><span>IPK</span><strong>3.81<i>/4.00</i></strong></div>
+            <div class="stat"><span>PROYEK</span><strong>05<i>TERDOKUMENTASI</i></strong></div>
+            <div class="stat"><span>TIM &amp; ORGANISASI</span><strong>05<i>PERAN AKTIF</i></strong></div>
+            <div class="stat"><span>BASIS</span><strong>BOGOR<i>INDONESIA</i></strong></div>
+          </div>
+
+          <p class="about__status" data-reveal style="--d:.3s">
+            <i></i> SEDANG MENGERJAKAN — SISTEM KELISTRIKAN VTOL, HARDWARE SMILE, DRONE DREAMPALM
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PROYEK ============ -->
+    <section class="section" id="projects">
+      <div class="section__head" data-reveal>
+        <span class="section__no">02</span>
+        <h2 class="section__title">PROYEK</h2>
+        <span class="section__rule"></span>
+        <span class="section__meta">(05)</span>
+      </div>
+
+      <p class="section__intro" data-reveal>
+        Lima sistem yang pernah saya rancang dan bangun — klik untuk melihat detail peran,
+        proses, dan komponen di dalamnya.
+      </p>
+
+      <div class="projects">
+        <article class="project" style="--accent:var(--acid)" data-reveal>
+          <button class="project__trigger" aria-expanded="false" aria-controls="proj-1">
+            <span class="project__no">01</span>
+            <span class="project__main">
+              <span class="project__title">SMILE</span>
+              <span class="project__sub">SMART SOIL MONITORING SYSTEM</span>
+            </span>
+            <span class="project__year">2026</span>
+            <span class="project__icon" aria-hidden="true"></span>
+          </button>
+          <div class="project__panel" id="proj-1">
+            <div class="project__inner">
+              <p class="project__desc">
+                Sistem monitoring kondisi tanah berbasis Internet of Things yang terintegrasi dengan
+                sistem irigasi otomatis, analisis data berbasis machine learning Random Forest, serta
+                aplikasi mobile untuk pemantauan.
+              </p>
+              <div class="project__cols">
+                <ul class="project__list">
+                  <li>Memimpin dan mengoordinasikan tim Divisi Hardware untuk kelancaran operasional.</li>
+                  <li>Mengembangkan skematik rangkaian elektronik dengan detail yang akurat.</li>
+                  <li>Meneliti dan menentukan komponen yang paling sesuai dengan kebutuhan proyek.</li>
+                  <li>Mengintegrasikan seluruh komponen serta membangun firmware yang andal.</li>
+                </ul>
+                <div class="project__meta">
+                  <div><span>PERAN</span><p>PIC Divisi Hardware</p></div>
+                  <div><span>PROGRAM</span><p>Penelitian Prodi (SMILE)</p></div>
+                  <div><span>PERIODE</span><p>Jul 2026 — Sekarang</p></div>
+                  <div><span>FOKUS</span><p>IoT · Machine Learning · Mobile</p></div>
+                </div>
+              </div>
+              <div class="tags">
+                <span>IoT</span><span>Random Forest</span><span>Irigasi Otomatis</span>
+                <span>Sensor Tanah</span><span>Firmware</span><span>Mobile App</span>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="project" style="--accent:var(--cyan)" data-reveal>
+          <button class="project__trigger" aria-expanded="false" aria-controls="proj-2">
+            <span class="project__no">02</span>
+            <span class="project__main">
+              <span class="project__title">DREAMPALM</span>
+              <span class="project__sub">DRONE PERTANIAN SEMI-OTONOM</span>
+            </span>
+            <span class="project__year">2026</span>
+            <span class="project__icon" aria-hidden="true"></span>
+          </button>
+          <div class="project__panel" id="proj-2">
+            <div class="project__inner">
+              <p class="project__desc">
+                Drone pertanian dengan kendali jarak jauh semi-otonom yang mengintegrasikan sistem
+                mekanik, elektronik, sensor kamera, mikrokontroler, dan modul computer vision untuk
+                mendeteksi penyakit busuk pangkal batang pada tanaman kelapa sawit.
+              </p>
+              <div class="project__cols">
+                <ul class="project__list">
+                  <li>Berkontribusi pada proses perakitan kerangka drone.</li>
+                  <li>Melakukan kalibrasi motor untuk memastikan performa optimal drone yang dirakit.</li>
+                  <li>Membantu integrasi sensor kamera dan modul computer vision pada payload.</li>
+                </ul>
+                <div class="project__meta">
+                  <div><span>PERAN</span><p>Staf Pendukung Divisi Hardware</p></div>
+                  <div><span>PROGRAM</span><p>PRIME STeP (Dreampalm)</p></div>
+                  <div><span>PERIODE</span><p>Jul 2026 — Sekarang</p></div>
+                  <div><span>FOKUS</span><p>Drone · Computer Vision</p></div>
+                </div>
+              </div>
+              <div class="tags">
+                <span>Drone</span><span>Computer Vision</span><span>Sensor Kamera</span>
+                <span>Mikrokontroler</span><span>Kalibrasi Motor</span><span>Kelapa Sawit</span>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="project" style="--accent:var(--copper)" data-reveal>
+          <button class="project__trigger" aria-expanded="false" aria-controls="proj-3">
+            <span class="project__no">03</span>
+            <span class="project__main">
+              <span class="project__title">ANTRAC</span>
+              <span class="project__sub">ROBOT TANK BERBASIS IC LOGIKA TERPROGRAM</span>
+            </span>
+            <span class="project__year">2026</span>
+            <span class="project__icon" aria-hidden="true"></span>
+          </button>
+          <div class="project__panel" id="proj-3">
+            <div class="project__inner">
+              <p class="project__desc">
+                Sistem kendali robot tank berbasis IC logika terprogram (PLD) tanpa mikrokontroler,
+                dilengkapi sistem keamanan perangkat keras berlapis agar robot dapat bergerak mulus
+                dan aman dari kerusakan listrik.
+              </p>
+              <div class="project__cols">
+                <ul class="project__list">
+                  <li>Memimpin dan mengoordinasikan tim Divisi Elektronika.</li>
+                  <li>Merancang dan mengembangkan konsep awal rangkaian elektronik robot ANTRAC.</li>
+                  <li>Menyusun Rencana Anggaran Biaya (RAB) komponen demi efisiensi dan keberhasilan proyek.</li>
+                  <li>Merancang pengamanan hardware berlapis pada jalur daya dan logika.</li>
+                </ul>
+                <div class="project__meta">
+                  <div><span>PERAN</span><p>Ketua Divisi Elektronika</p></div>
+                  <div><span>PROGRAM</span><p>Proyek Angkatan 61 (Antrac)</p></div>
+                  <div><span>PERIODE</span><p>Apr 2026 — Jun 2026</p></div>
+                  <div><span>FOKUS</span><p>PLD · Logika Digital</p></div>
+                </div>
+              </div>
+              <div class="tags">
+                <span>PLD</span><span>IC Logika</span><span>Robot Tank</span>
+                <span>Hardware Safety</span><span>RAB</span><span>Tanpa Mikrokontroler</span>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="project" style="--accent:#9d8cff" data-reveal>
+          <button class="project__trigger" aria-expanded="false" aria-controls="proj-4">
+            <span class="project__no">04</span>
+            <span class="project__main">
+              <span class="project__title">WATER TREATMENT</span>
+              <span class="project__sub">OTOMASI WTP BERBASIS PLC &amp; HMI</span>
+            </span>
+            <span class="project__year">2026</span>
+            <span class="project__icon" aria-hidden="true"></span>
+          </button>
+          <div class="project__panel" id="proj-4">
+            <div class="project__inner">
+              <p class="project__desc">
+                Sistem otomasi Water Treatment Plant (WTP) berbasis PLC Omron dan HMI yang dirancang
+                untuk mengelola proses pengolahan air bersih secara otomatis, terintegrasi, dan mudah
+                dipantau secara real-time.
+              </p>
+              <div class="project__cols">
+                <ul class="project__list">
+                  <li>Merancang alur logika proses pengolahan air pada PLC Omron.</li>
+                  <li>Membangun antarmuka HMI untuk pemantauan dan kontrol operator.</li>
+                  <li>Mengintegrasikan instrumen lapangan agar status proses terbaca real-time.</li>
+                </ul>
+                <div class="project__meta">
+                  <div><span>PERAN</span><p>Perancang Sistem Otomasi</p></div>
+                  <div><span>PERIODE</span><p>2026</p></div>
+                  <div><span>FOKUS</span><p>PLC · HMI · Otomasi Industri</p></div>
+                  <div><span>STATUS</span><p>Selesai</p></div>
+                </div>
+              </div>
+              <div class="tags">
+                <span>PLC Omron</span><span>HMI</span><span>Otomasi</span>
+                <span>Real-time</span><span>Water Treatment</span>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="project" style="--accent:#63e6a8" data-reveal>
+          <button class="project__trigger" aria-expanded="false" aria-controls="proj-5">
+            <span class="project__no">05</span>
+            <span class="project__main">
+              <span class="project__title">ECO BUGUSTER</span>
+              <span class="project__sub">PERANGKAP HAMA BERBASIS CAHAYA UV</span>
+            </span>
+            <span class="project__year">2025</span>
+            <span class="project__icon" aria-hidden="true"></span>
+          </button>
+          <div class="project__panel" id="proj-5">
+            <div class="project__inner">
+              <p class="project__desc">
+                Alat perangkap hama berbasis cahaya UV yang menggunakan tenaga surya sebagai sumber
+                energinya — solusi elektronika sederhana untuk kebutuhan pertanian yang mandiri energi.
+              </p>
+              <div class="project__cols">
+                <ul class="project__list">
+                  <li>Merancang rangkaian driver lampu UV berdaya rendah.</li>
+                  <li>Mengintegrasikan panel surya, penyimpanan daya, dan sistem switching otomatis.</li>
+                  <li>Menguji ketahanan alat pada pemakaian luar ruang.</li>
+                </ul>
+                <div class="project__meta">
+                  <div><span>PERAN</span><p>Perancang Rangkaian</p></div>
+                  <div><span>PERIODE</span><p>2025</p></div>
+                  <div><span>FOKUS</span><p>Energi Surya · UV</p></div>
+                  <div><span>STATUS</span><p>Selesai</p></div>
+                </div>
+              </div>
+              <div class="tags">
+                <span>UV</span><span>Panel Surya</span><span>Low Power</span>
+                <span>Perangkap Hama</span><span>Energi Terbarukan</span>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============ KETERAMPILAN ============ -->
+    <section class="section" id="skills">
+      <div class="section__head" data-reveal>
+        <span class="section__no">03</span>
+        <h2 class="section__title">KETERAMPILAN</h2>
+        <span class="section__rule"></span>
+        <span class="section__meta">9 KOMPETENSI</span>
+      </div>
+
+      <div class="skills">
+        <div class="skill-card" data-reveal style="--d:.05s">
+          <div class="skill-card__head"><span class="led"></span><h3>HARDWARE &amp; RANGKAIAN</h3><span class="skill-card__no">A</span></div>
+          <ul>
+            <li><strong>Skematik Rangkaian</strong><p>Merancang dan menggambar skematik elektronik secara terstruktur dan akurat.</p></li>
+            <li><strong>Pemilihan Komponen</strong><p>Menganalisis dan memilih komponen agar rangkaian efisien, andal, dan hemat biaya.</p></li>
+            <li><strong>Desain PCB</strong><p>Merancang tata letak sirkuit tercetak menggunakan DipTrace.</p></li>
+            <li><strong>Menyolder</strong><p>Penyolderan presisi dengan koneksi elektrikal yang kuat dan sesuai standar.</p></li>
+            <li><strong>Troubleshooting</strong><p>Mengidentifikasi, menganalisis, dan mengatasi masalah pada rangkaian elektronik.</p></li>
+          </ul>
+        </div>
+
+        <div class="skill-card" data-reveal style="--d:.1s">
+          <div class="skill-card__head"><span class="led"></span><h3>FIRMWARE &amp; SISTEM</h3><span class="skill-card__no">B</span></div>
+          <ul>
+            <li><strong>Pemrograman Firmware</strong><p>Menulis dan mengunggah kode firmware mikrokontroler melalui Arduino IDE.</p></li>
+            <li><strong>Otomasi Industri</strong><p>Pemrograman PLC Omron dan perancangan antarmuka HMI.</p></li>
+            <li><strong>Internet of Things</strong><p>Integrasi sensor, akuisisi data, dan pemantauan jarak jauh.</p></li>
+            <li><strong>Computer Vision</strong><p>Integrasi modul kamera untuk deteksi kondisi tanaman pada drone.</p></li>
+          </ul>
+        </div>
+
+        <div class="skill-card" data-reveal style="--d:.15s">
+          <div class="skill-card__head"><span class="led"></span><h3>CARA KERJA</h3><span class="skill-card__no">C</span></div>
+          <ul>
+            <li><strong>Kerjasama Tim</strong><p>Berkolaborasi efektif lintas divisi pada setiap proyek.</p></li>
+            <li><strong>Kepemimpinan</strong><p>Mengoordinasikan tim teknis agar proyek selesai terencana dan tepat waktu.</p></li>
+            <li><strong>Komunikasi</strong><p>Menyampaikan ide dan informasi secara jelas, terstruktur, dan efektif.</p></li>
+          </ul>
+          <div class="skill-card__note">
+            Terbiasa memimpin divisi elektronika dan menjadi PIC hardware pada proyek riset kampus.
+          </div>
+        </div>
+      </div>
+
+      <div class="tools" data-reveal>
+        <span class="tools__label">TOOLS &amp; MODUL</span>
+        <div class="tools__chips">
+          <span>Arduino IDE</span><span>DipTrace</span><span>PLC Omron</span>
+          <span>HMI</span><span>IoT Sensor</span><span>Random Forest</span>
+          <span>Computer Vision</span><span>Modul Kamera</span><span>Panel Surya</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PENGALAMAN ============ -->
+    <section class="section" id="experience">
+      <div class="section__head" data-reveal>
+        <span class="section__no">04</span>
+        <h2 class="section__title">PENGALAMAN</h2>
+        <span class="section__rule"></span>
+        <span class="section__meta">TIM &amp; ORGANISASI</span>
+      </div>
+
+      <div class="timeline">
+        <article class="tl-item" data-reveal>
+          <span class="tl-item__date">JAN 2026 — SEKARANG</span>
+          <div class="tl-item__body">
+            <h3>IPB Robotic Club</h3>
+            <p class="tl-item__role">Anggota Divisi Elektronika VTOL</p>
+            <p>Mengembangkan dan merancang sistem kelistrikan yang efisien dan inovatif untuk drone, memastikan kinerja optimal dan kepatuhan terhadap standar keselamatan industri.</p>
+          </div>
+          <span class="tl-item__tag">ROBOTIKA</span>
+        </article>
+
+        <article class="tl-item" data-reveal>
+          <span class="tl-item__date">JUL 2026 — SEKARANG</span>
+          <div class="tl-item__body">
+            <h3>Penelitian Prodi — SMILE</h3>
+            <p class="tl-item__role">PIC Divisi Hardware</p>
+            <p>Memimpin tim hardware, mengembangkan skematik, menentukan komponen, mengintegrasikan sistem, dan membangun firmware yang andal.</p>
+          </div>
+          <span class="tl-item__tag">RISET</span>
+        </article>
+
+        <article class="tl-item" data-reveal>
+          <span class="tl-item__date">JUL 2026 — SEKARANG</span>
+          <div class="tl-item__body">
+            <h3>PRIME STeP — Dreampalm</h3>
+            <p class="tl-item__role">Staf Pendukung Divisi Hardware</p>
+            <p>Perakitan kerangka drone dan kalibrasi motor untuk memastikan performa optimal dari drone yang dirakit.</p>
+          </div>
+          <span class="tl-item__tag">DRONE</span>
+        </article>
+
+        <article class="tl-item" data-reveal>
+          <span class="tl-item__date">APR 2026 — JUN 2026</span>
+          <div class="tl-item__body">
+            <h3>Proyek Angkatan 61 — Antrac</h3>
+            <p class="tl-item__role">Ketua Divisi Elektronika</p>
+            <p>Memimpin divisi elektronika, merancang konsep awal rangkaian robot ANTRAC, dan menyusun RAB komponen untuk efisiensi proyek.</p>
+          </div>
+          <span class="tl-item__tag">ROBOTIKA</span>
+        </article>
+
+        <article class="tl-item" data-reveal>
+          <span class="tl-item__date">NOV 2024 — NOV 2025</span>
+          <div class="tl-item__body">
+            <h3>Himavo Micro IT</h3>
+            <p class="tl-item__role">Anggota · Humas MTE</p>
+            <p>Mengemban peran humas pada program Micro Techno Education (MTE) di SMKN 2 Kota Bogor: koordinasi komunikasi publik dan pengelolaan hubungan eksternal.</p>
+          </div>
+          <span class="tl-item__tag">ORGANISASI</span>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============ KONTAK ============ -->
+    <section class="section contact" id="contact">
+      <div class="section__head" data-reveal>
+        <span class="section__no">05</span>
+        <h2 class="section__title">KONTAK</h2>
+        <span class="section__rule"></span>
+        <span class="section__meta">TERBUKA</span>
+      </div>
+
+      <div class="contact__top">
+        <p class="contact__lead" data-reveal>Punya proyek elektronika, riset hardware,<br />atau ingin berkolaborasi?</p>
+        <span class="contact__arrow" aria-hidden="true">↘</span>
+      </div>
+
+      <a class="contact__mail" href="mailto:wahyupratomo221@gmail.com" data-reveal>
+        <span>wahyupratomo221@gmail.com</span>
+        <i aria-hidden="true">↗</i>
+      </a>
+
+      <div class="contact__grid">
+        <div class="contact__cell" data-reveal>
+          <span class="contact__label">TELEPON / WHATSAPP</span>
+          <a href="https://wa.me/6289524128626" target="_blank" rel="noopener">0895-2412-8626</a>
+        </div>
+        <div class="contact__cell" data-reveal style="--d:.05s">
+          <span class="contact__label">LINKEDIN</span>
+          <a href="https://www.linkedin.com/in/wahyu-pratomo-bb3544325" target="_blank" rel="noopener">/in/wahyu-pratomo</a>
+        </div>
+        <div class="contact__cell" data-reveal style="--d:.1s">
+          <span class="contact__label">LOKASI</span>
+          <p>Kp. Kebon Rumput, Sukaraja,<br />Kabupaten Bogor, Indonesia</p>
+        </div>
+        <div class="contact__cell contact__cell--action" data-reveal style="--d:.15s">
+          <span class="contact__label">SALIN ALAMAT EMAIL</span>
+          <button class="copy-btn" id="copyMail" data-copy="wahyupratomo221@gmail.com">SALIN KE CLIPBOARD</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-foot">
+    <span>© 2026 WAHYU PRATOMO</span>
+    <span class="site-foot__mid">DIRANCANG &amp; DIBANGUN DENGAN HTML · CSS · JAVASCRIPT</span>
+    <a href="#top">KEMBALI KE ATAS ↑</a>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
