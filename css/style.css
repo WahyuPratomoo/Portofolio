@@ -204,17 +204,22 @@ html:not(.is-loading) .loader { visibility: hidden; }
 
 .loader__bolt {
   will-change: transform, opacity;
+  /* Mulai tak terlihat; `boltIn` hanya memunculkannya sekali (tanpa
+     `backwards`, jadi tidak "berkedip balik" ke keadaan semula). */
+  opacity: 0;
   animation:
-    boltIn 0.45s var(--ease-out) backwards,
+    boltIn 0.45s var(--ease-out) forwards,
     boltGlow 1.5s var(--ease) infinite;
 }
-/* menyala bertahap dari petir 1 sampai 5; tiap petir yang sudah muncul
-   tetap terang, jadi jumlahnya bisa dihitung sambil menunggu */
-.loader__slot:nth-child(1) .loader__bolt { animation-delay: 0ms, 520ms; }
-.loader__slot:nth-child(2) .loader__bolt { animation-delay: 160ms, 680ms; }
-.loader__slot:nth-child(3) .loader__bolt { animation-delay: 320ms, 840ms; }
-.loader__slot:nth-child(4) .loader__bolt { animation-delay: 480ms, 1000ms; }
-.loader__slot:nth-child(5) .loader__bolt { animation-delay: 640ms, 1160ms; }
+/* Menyala bertahap 1 -> 5 dengan jeda TEPAT 1 detik per petir, dimulai pada
+   detik ke-1 (bukan 0), jadi petir ke-n menyala pada detik ke-n dan kelimanya
+   lengkap tepat di detik ke-5, selesai sekitar detik ke-6.
+   Tiap petir yang sudah muncul tetap terang. */
+.loader__slot:nth-child(1) .loader__bolt { animation-delay: 1000ms, 1520ms; }
+.loader__slot:nth-child(2) .loader__bolt { animation-delay: 2000ms, 2520ms; }
+.loader__slot:nth-child(3) .loader__bolt { animation-delay: 3000ms, 3520ms; }
+.loader__slot:nth-child(4) .loader__bolt { animation-delay: 4000ms, 4520ms; }
+.loader__slot:nth-child(5) .loader__bolt { animation-delay: 5000ms, 5520ms; }
 
 @keyframes boltIn {
   0% { transform: scale(0.2) translateY(10px); opacity: 0; filter: blur(3px); }

@@ -317,14 +317,15 @@
     loader.classList.add("is-converge");
     discharge();
   } else {
-    // lima petir menyala bertahap (delay CSS 0..640ms + durasi 500ms)
-    const T_BOLTS = 1200;
+    // lima petir menyala bertahap, TEPAT 1 detik per petir, mulai detik ke-1
+    // (CSS delay 1000/2000/3000/4000/5000 ms) + durasi muncul 450 ms
+    const T_BOLTS = 5450;
     // berdenyut sebentar setelah kelima petir menyala — beri waktu menghitung
-    const T_PULSE = 440;
+    const T_PULSE = 900;
     // kelimanya menyatu jadi satu petir
     const T_CONVERGE = 520;
     // jeda singkat supaya petir tunggal terlihat "terisi" sebelum melepas
-    const T_CHARGE = 220;
+    const T_CHARGE = 320;
 
     // aset mulai dicek sejak awal, paralel dengan koreografi petir —
     // jadi saat petir siap, biasanya tidak ada sisa tunggu
